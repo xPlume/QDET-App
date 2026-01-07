@@ -1,0 +1,212 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Cassiopée</title>
+	
+	
+	
+	<!-- Favicon -->
+	<link href="{% static 'img/favicon-l.webp' %}" rel="icon">
+	
+	
+	
+	
+	<!-- Core theme CSS -->
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+	
+	<!-- Add-on custom CSS -->
+	<link rel="stylesheet" href="{% static 'css/add_on_style.min.css' %}"/>
+	
+	
+	
+	
+	
+	{% block head_block %}
+		
+		
+		
+	{% endblock %}
+	
+	
+</head>
+
+
+<body>
+	
+	<style>
+		body {
+			overflow-x: hidden;
+		}
+		
+		.dropdown-menu {
+			max-width: 90vw;
+			overflow-x: auto;
+			right: 0;
+			left: auto !important;
+			transition: opacity 0.3s ease;
+		}
+	</style>
+	
+	
+	<!-- Navbar -->
+	<div class="position-relative p-0 container-fluid">
+		
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 px-lg-5 py-1 py-lg-0 d-flex align-items-center">
+			
+			<div class="container-xl">
+				
+				<a href="{% url 'index' %}" class="navbar-brand p-0">
+					<h1 class="text-white m-0">Cassiopée</h1>
+				</a>
+				
+				
+				<!-- Right align icons -->
+				<div class="d-flex align-items-center ms-auto order-lg-2 mt-lg-2 dark-navbar">
+					
+					<!-- Separator -->
+					<div class="vr mx-2"></div>
+					
+					<!-- Dark / Light mode select -->
+					<div class="dropdown mx-1 my-2">
+						<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"  aria-expanded="false">
+							<img src="{% static 'img/dark_light_icon.svg' %}" class="icon-container" alt=""/>
+							<span class="visually-hidden">Theme options</span>
+						</a>
+						<ul class="dropdown-menu drop-navbar">
+							<li class="dropdown-item" id="enable-light">Light mode</li>
+							<li class="dropdown-item" id="enable-dark">Dark mode</li>
+						</ul>
+					</div>
+					
+					
+				</div>
+				
+				
+				
+				<!-- Navbar collapse button -->
+				<button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+					<span class="navbar-toggler-icon"></span>
+					<span class="visually-hidden">Navbar Collapsing Menu</span>
+				</button>
+				
+				
+				<!-- Navbar collapsing elements -->
+				<div class="collapse navbar-collapse" id="navbarCollapse">
+					
+					<!-- Text buttons -->
+					<div class="navbar-nav ms-auto pe-4 mb-3">
+						<a href="{% url 'index' %}" class="nav-item nav-link btn-link ms-3 {% if request.resolver_match.url_name == 'index' %}active{% endif %}">Home</a>
+						<a href="{% url 'index' %}" class="nav-item nav-link btn-link ms-3">Home</a>
+						
+						
+						<!-- Log out -->
+						{% if request.user.is_authenticated %}
+							<a href="#" class="nav-item nav-link ms-2" onclick="confirmLogout(event)">Log out</a>
+							<!-- Hidden logout form -->
+							<form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
+								{% csrf_token %}
+							</form>
+						{% endif %}
+						
+					</div>
+					
+					
+				</div>
+				
+				
+			</div>
+			
+			
+			
+		</nav>
+		
+		
+	</div>
+	
+	
+	<!-- Main header -->
+	<div class="position-relative p-0">
+		
+		{% block header %}
+			
+			
+		{% endblock %}
+		
+	</div>
+	
+	
+	
+	{% block content %}
+		
+		
+		
+		
+	{% endblock %}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- JavaScript Libraries -->
+		
+		<!-- Bootstrap JS Bundle -->
+	<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+	
+		<!-- Custom Javascript -->
+	<script src="{% static 'js/add_on_js.js' %}"></script>
+	
+	
+	
+	
+	
+	
+	<!-- Dark / Light mode toggle logic -->
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			// Set up references to buttons
+			const lightButton = document.getElementById("enable-light");
+			const darkButton = document.getElementById("enable-dark");
+			
+			// Function to apply a theme
+			const applyTheme = (theme) => {
+				document.documentElement.setAttribute("data-bs-theme", theme);
+				localStorage.setItem("theme", theme);
+			};
+			
+			// Load saved theme on page load
+			const savedTheme = localStorage.getItem("theme") || "light";
+			applyTheme(savedTheme);
+			
+			// Add event listeners for the buttons
+			lightButton.addEventListener("click", () => applyTheme("light"));
+			darkButton.addEventListener("click", () => applyTheme("dark"));
+		});
+	</script>
+	
+	
+	<!-- Log out -->
+	<script>
+		function confirmLogout(event) {
+			event.preventDefault();  // Prevent <a> from navigating
+			if (confirm("Are you sure you want to log out?")) {
+				document.getElementById('logout-form').submit();
+			}
+		}
+	</script>
+	
+	
+</body>
+
+</html>
