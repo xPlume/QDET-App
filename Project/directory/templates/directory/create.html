@@ -25,7 +25,7 @@
 	<div class="mt-4"></div>
 	
 	<!-- Form start -->
-	<form method="POST" enctype="multipart/form-data" id="new-room-form">
+	<form method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
 		
 		<div class="container">
@@ -40,17 +40,34 @@
 			
 			
 			
-			<!-- Answer -->
-			<div>
-				<label for="exampleTextarea" class="form-label mt-4">Answer</label>
-				<textarea class="form-control" name="answer" id="exampleTextarea" rows="3" data-lt-tmp-id="lt-985890" spellcheck="false" data-gramm="false" style="line-height: 24px;"></textarea>
+			<!-- Answer(s) -->
+			{{ answer_formset.management_form }}
+			<label class="form-label mt-4">Answer(s)</label>
+		
+			<div class="px-4" id="answer-formset-container">
+			<!-- Render each form in the formset -->
+			{% for form in answer_formset %}
+					<div class="formset-form">
+						{{ form.id }}
+						{{ form.answer }}
+						{{ form.is_correct }}
+					</div>
+				{% endfor %}
 			</div>
 			
-			<!-- Correct Answer Select -->
+			<!-- Button to add a new form -->
+			<div class="mt-1 px-4">
+				<button type="button" class="btn btn-outline-primary" id="add-answer">Add More</button>
+				<button type="button" class="btn btn-outline-danger" id="remove-answer">Remove</button>
+			</div>
+			
+			<!-- Correct Answer Select 
 			<div class="form-check form-switch mt-2">
 				<input class="form-check-input" name="is_correct" type="checkbox" style="transform: scale(1.5);">
 				<label class="form-check-label ms-2" for="flexSwitchCheckDefault">Select as Correct Answer</label>
-			</div>
+			</div> -->
+			
+			
 			
 			
 			<!-- Submit button -->
@@ -59,5 +76,47 @@
 		</div>
 			
 	</form>
+	
+	
+	
+	
+	<!-- Add JavaScript to handle adding more forms -->
+	<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		const formContainer = document.getElementById('answer-formset-container');
+		const addBtn = document.getElementById('add-answer');
+		const removeBtn = document.getElementById('remove-answer');
+		const totalForms = document.getElementById('id_answers-TOTAL_FORMS');
+	
+		let formNum = formContainer.children.length;
+		
+		// Adding a new answer
+		addBtn.addEventListener('click', function () {
+			const newForm = formContainer.children[0].cloneNode(true);
+			const formRegex = RegExp(`answers-(\\d+)-`, 'g');
+			
+			newForm.innerHTML = newForm.innerHTML.replace(formRegex, `answers-${formNum}-`);
+			
+			// clear values
+			newForm.querySelectorAll('input, textarea').forEach(el => {
+					if (el.type === 'checkbox') el.checked = false;
+				else el.value = '';
+			});
+	
+			formContainer.appendChild(newForm);
+			totalForms.value = ++formNum;
+		});
+		
+		// Removing a field
+		removeBtn.addEventListener('click', function () {
+			if (formNum > 1) {
+				formContainer.removeChild(formContainer.lastElementChild);
+				totalForms.value = --formNum;
+			} else {
+				alert("You need at least one answer.");
+			}
+		});
+	});
+	</script>
 	
 {% endblock %}
