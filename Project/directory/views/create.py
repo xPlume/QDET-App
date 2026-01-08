@@ -3,7 +3,7 @@ from django.contrib import messages
 
 
 from directory.models import Question, Answer
-from directory.forms import QuestionForm, AnswerForm
+from directory.forms import QuestionForm
 
 from django.forms import modelformset_factory
 
@@ -11,6 +11,8 @@ from django.forms import modelformset_factory
 def create(request):
 	
 	AnswerFormSet = modelformset_factory(Answer, fields=['answer', 'is_correct'], extra=1)
+	prefix = "answers"
+	
 	
 	if request.method == 'POST':
 		
@@ -51,6 +53,7 @@ def create(request):
 	context = {
 		"new_question_form": new_question_form,
 		"answer_formset": answer_formset,
+		"prefix": prefix,
 	}
 	
 	return render(request, template_name, context)
