@@ -102,7 +102,7 @@
 					<!-- Text buttons -->
 					<div class="navbar-nav ms-auto pe-4 mb-3">
 						<a href="{% url 'index' %}" class="nav-item nav-link btn-link ms-3 {% if request.resolver_match.url_name == 'index' %}active{% endif %}">Home</a>
-						<a href="{% url 'index' %}" class="nav-item nav-link btn-link ms-3">Home</a>
+						<a href="{% url 'create' %}" class="nav-item nav-link btn-link ms-3 {% if request.resolver_match.url_name == 'create' %}active{% endif %}">Create Question</a>
 						
 						
 						<!-- Log out -->
@@ -128,6 +128,11 @@
 		
 		
 	</div>
+	
+	
+	<!-- Displaying messages -->
+	{% include "display_messages.html" %}
+	
 	
 	
 	<!-- Main header -->

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block head_block %}
+	
+	<meta name="description" content="">
+	
+{% endblock %}
+
+
+
+{% block header %}
+	
+	
+	
+{% endblock %}
+
+
+
+
+{% block content %}
+	
+	
+	<div class="mt-4"></div>
+	
+	<!-- Form start -->
+	<form method="POST" enctype="multipart/form-data" id="new-room-form">
+		{% csrf_token %}
+		
+		<div class="container">
+			
+			<legend class="mb-2">Creating a new question</legend>
+			
+			<!-- Question -->
+			<div class="form-floating mb-3">
+				<input required name="question" type="text" placeholder="Question" class="form-control">
+				<label class="ps-4" for="floatingInput">Question</label>
+			</div>
+			
+			
+			
+			<!-- Answer -->
+			<div>
+				<label for="exampleTextarea" class="form-label mt-4">Answer</label>
+				<textarea class="form-control" name="answer" id="exampleTextarea" rows="3" data-lt-tmp-id="lt-985890" spellcheck="false" data-gramm="false" style="line-height: 24px;"></textarea>
+			</div>
+			
+			<!-- Correct Answer Select -->
+			<div class="form-check form-switch mt-2">
+				<input class="form-check-input" name="is_correct" type="checkbox" style="transform: scale(1.5);">
+				<label class="form-check-label ms-2" for="flexSwitchCheckDefault">Select as Correct Answer</label>
+			</div>
+			
+			
+			<!-- Submit button -->
+			<div class="container">
+				<button type="submit" class="btn btn-lg btn-outline-primary mt-5">Save</button>
+		</div>
+			
+	</form>
+	
+{% endblock %}
