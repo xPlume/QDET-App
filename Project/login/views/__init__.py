@@ -1,0 +1,5 @@
+from .register import register
+from .deactivate_account import deactivate_account
+from .password_reset import custom_password_reset, CustomPasswordResetConfirmView
+from .activate_account import activate_account
+from .email_activation import send_activation_email

@@ -62,7 +62,7 @@
 			<div class="container-xl">
 				
 				<a href="{% url 'index' %}" class="navbar-brand p-0">
-					<h1 class="text-white m-0">Cassiopée</h1>
+					<h1 class="text-white m-0">QDET App</h1>
 				</a>
 				
 				
@@ -105,9 +105,21 @@
 						<a href="{% url 'create' %}" class="nav-item nav-link btn-link ms-3 {% if request.resolver_match.url_name == 'create' %}active{% endif %}">Create Question</a>
 						
 						
+						<!-- Register Dropdown -->
+						{% if not request.user.is_authenticated %}
+						<div class="dropdown">
+							<a class="nav-link nav-link dropdown-toggle ms-3 {% if request.resolver_match.url_name == 'login' %}active{% elif request.resolver_match.url_name == 'register' %}active{% endif %}" data-bs-toggle="dropdown" href="#" aria-expanded="false">Account</a>
+							<ul class="dropdown-menu drop-navbar">
+								<li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+								<li><a class="dropdown-item" href="{% url 'register' %}">Register</a></li>
+							</ul>
+						</div>
+						{% endif %}
+						
+						
 						<!-- Log out -->
 						{% if request.user.is_authenticated %}
-							<a href="#" class="nav-item nav-link ms-2" onclick="confirmLogout(event)">Log out</a>
+							<a href="#" class="nav-item nav-link ms-3" onclick="confirmLogout(event)">Log out</a>
 							<!-- Hidden logout form -->
 							<form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
 								{% csrf_token %}
@@ -130,8 +142,7 @@
 	</div>
 	
 	
-	<!-- Displaying messages -->
-	{% include "display_messages.html" %}
+	
 	
 	
 	
@@ -145,6 +156,10 @@
 		
 	</div>
 	
+	
+	
+	<!-- Displaying messages -->
+	{% include "display_messages.html" %}
 	
 	
 	{% block content %}

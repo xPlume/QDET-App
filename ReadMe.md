@@ -79,7 +79,7 @@ pip install -r requirements.txt
 
 5. Apply database migrations:
 ```bash
-pip install -r requirements.txt
+python manage.py migrate
 ```
 
 6. Create a superuser to access the Django admin:
@@ -89,5 +89,5 @@ python manage.py createsuperuser
 
 7. Start the development server:
 ```bash
-python manage.py createsuperuser
+python manage.py runserver
 ```

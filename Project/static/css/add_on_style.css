@@ -645,7 +645,7 @@
 	
     
 	.navbar-dark .navbar-nav .nav-link::before {
-	  content: "";
+		content: "";
 	    position: absolute;
 	    height: 2px;
 	    bottom: 2px;
@@ -655,6 +655,15 @@
 	    width: 0px;
 	    transition: all 0.3s ease-in-out 0s;
 	}
+	
+	.navbar-dark {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        background: transparent !important;
+    }
 	
 	/* Hover or active underline animation */
 	.navbar-dark .navbar-nav .nav-link:hover::before,

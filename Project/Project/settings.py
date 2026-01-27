@@ -32,7 +32,7 @@ INSTALLED_APPS = [
 	
 	# Apps
 	'directory',
-	
+	'login',
 ]
 
 MIDDLEWARE = [
@@ -116,3 +116,17 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+
+# Redirect to home after login
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'index'
+
+
+
+
+AUTHENTICATION_BACKENDS = [
+	'login.UsernameOrEmail_Login.UsernameOrEmailLogin',
+	'django.contrib.auth.backends.ModelBackend',
+]

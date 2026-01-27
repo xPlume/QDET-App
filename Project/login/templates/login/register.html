@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+
+{% block header %}
+	
+	<!-- Hero Header -->
+	<div class="py-5 bg-dark hero-header mb-5">
+		<img src="{% static 'img/bg-hero.webp' %}" alt="Hero background" fetchpriority="high">
+		<div class="container hero-content text-center my-2 pt-5 pb-4">
+			<h1 class="display-3 text-white mb-3 animated fadeInDown roboto-font">Register</h1>
+			<nav aria-label="breadcrumb">
+			<ol class="breadcrumb justify-content-center">
+				<li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+				<li class="breadcrumb-item text-white active" aria-current="page">Register</li>
+			</ol>
+			</nav>
+		</div>
+	</div>
+	
+{% endblock %}
+
+
+{% block content %}
+	
+	
+	
+	<form method="post" class="mb-3" enctype="multipart/form-data">
+		
+		
+		{% csrf_token %}
+		<div class="container">
+			
+			
+			<!-- User name -->
+			<div class="row d-flex justify-content-center">	
+				<div class="form-floating col-md-8 col-lg-6 mb-3">
+					<input required name="username" type="text" placeholder="Username" class="form-control">
+					<label class="ms-3" for="floatingInput">New username</label>
+				</div>
+			</div>
+			
+			
+			<!-- Email adress -->
+			<div class="row d-flex justify-content-center">	
+				<div class="form-floating col-md-8 col-lg-6 mb-3">
+					<input required name="email" type="text" placeholder="Enter your email" class="form-control">
+					<label class="ms-3" for="floatingInput">Email address</label>
+				</div>
+			</div>
+			
+			
+			<!-- Password1 -->
+			<div class="row d-flex justify-content-center">	
+				<div class="form-floating col-md-8 col-lg-6 mb-3">
+					<input required name="password1" type="password" placeholder="Enter your password" class="form-control" autocomplete="off">
+					<label class="ms-3" for="floatingInput">Password</label>
+				</div>
+			</div>
+			
+			
+			<!-- Password 2 (for confirmation) -->
+			<div class="row d-flex justify-content-center">	
+				<div class="form-floating col-md-8 col-lg-6 mb-3">
+					<input required name="password2" type="password" placeholder="Enter your password again" class="form-control" autocomplete="off">
+					<label class="ms-3" for="floatingInput">Password confirmation</label>
+					<small class="form-text text-muted">Input the same password as before, for verification.</small>
+				</div>
+			</div>
+			
+			
+			
+			<!-- Register button -->
+			<div class="row d-flex justify-content-center">
+				<div class="col-md-8 col-lg-6 mt-3">
+					<button type="submit" class="btn btn-lg btn-outline-primary w-100">Register</button>
+				</div>
+			</div>
+			
+			<!-- Login text -->
+			<p class="my-4 text-center">Already have an account? <a href="{% url 'login' %}">Login</a> </p>
+			
+		</div>
+		
+	</form>
+	
+	
+	
+{% endblock content %}
