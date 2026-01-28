@@ -77,17 +77,22 @@ cd Cassiopee
 pip install -r requirements.txt
 ```
 
-5. Apply database migrations:
+5. Navigate to the Project directory
+```bash
+cd Project
+```
+
+6. Apply database migrations:
 ```bash
 python manage.py migrate
 ```
 
-6. Create a superuser to access the Django admin:
+7. Create a superuser to access the Django admin:
 ```bash
 python manage.py createsuperuser
 ```
 
-7. Start the development server:
+8. Start the development server:
 ```bash
 python manage.py runserver
 ```

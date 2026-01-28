@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 from directory.models import Question, Answer
@@ -8,6 +9,7 @@ from directory.forms import QuestionForm
 from django.forms import modelformset_factory
 
 
+@login_required
 def create(request):
 	
 	AnswerFormSet = modelformset_factory(Answer, fields=['answer', 'is_correct'], extra=1)
@@ -21,7 +23,9 @@ def create(request):
 		
 		if new_question_form.is_valid() and answer_formset.is_valid():
 			
-			new_question_instance = new_question_form.save()
+			new_question_instance = new_question_form.save(commit=False)
+			new_question_instance.uploader = request.user
+			new_question_instance.save()
 			
 			# Handling the answers
 			answer_formset_instance = answer_formset.save(commit=False)
