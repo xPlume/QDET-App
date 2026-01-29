@@ -34,11 +34,29 @@
 {% block content %}
 	
 	
-	<form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Upload</button>
-    </form>
+	
+	<div class="mt-4"></div>
+	
+	<!-- Form start -->
+	<form method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
+		
+		<div class="container">
+			
+			<legend class="mb-2">Bulk import through a .cvs file</legend>
+			
+			<!-- File upload -->
+			<div>
+				<label class="form-label mt-4">CSV File</label>
+				<input required name="file" type="file" class="form-control" accept=".csv">
+			</div>
+			
+			<!-- Submit button -->
+			<div class="mb-5">
+				<button type="submit" class="btn btn-lg btn-outline-primary mt-5">Upload</button>
+			</div>
+			
+	</form>
 	
 	
 	

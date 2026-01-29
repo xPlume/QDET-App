@@ -8,7 +8,7 @@ class QuestionForm(forms.ModelForm):
 	
 	class Meta:
 		model = Question
-		fields = ['question']
+		fields = ['context_id', 'context', 'q_id', 'question', 'target_level']
 	#class Meta	
 	
 #class QuestionForm

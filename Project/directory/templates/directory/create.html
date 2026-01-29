@@ -44,10 +44,47 @@
 			
 			<legend class="mb-2">Creating a new question</legend>
 			
-			<!-- Question -->
-			<div class="form-floating mb-3">
-				<input required name="question" type="text" placeholder="Question" class="form-control">
-				<label class="ps-4" for="floatingInput">Question</label>
+			
+			<!-- Basic Info -->
+			<div class="row">
+				
+				<!-- Context ID -->
+				<div class="col-12 col-sm-4 form-floating mb-3">
+					<input required name="context_id" type="number" placeholder="Context ID" class="form-control">
+					<label class="ms-3" for="floatingInput">Context ID</label>
+				</div>
+				
+				<!-- Question ID -->
+				<div class="col-12 col-sm-4 form-floating mb-3">
+					<input required
+						class="form-control"
+						type="text"
+						placeholder="Question ID"
+						name="q_id"
+						>
+					<label class="ms-3" for="floatingInput">Question ID</label>
+				</div>
+				
+				<!-- Target Level -->
+				<div class="col-12 col-sm-4 form-floating mb-3">
+					<input required name="target_level" type="text" placeholder="Target Level" class="form-control">
+					<label class="ms-3" for="floatingInput">Target Level</label>
+				</div>
+			</div>
+			
+			
+			
+			<!-- Context Text Area -->
+			<div class="mb-3">
+				<label class="form-label">Context</label>
+				<textarea name="context" class="form-control" rows="3"></textarea>
+			</div>
+			
+			
+			<!-- Question Text Area -->
+			<div class="mb-3">
+				<label class="form-label">Question</label>
+				<textarea required name="question" class="form-control" rows="3"></textarea>
 			</div>
 			
 			

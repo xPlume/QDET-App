@@ -105,7 +105,16 @@
 						
 						
 						{% if request.user.is_authenticated %}
-							<a href="{% url 'create' %}" class="nav-item nav-link btn-link ms-3 {% if request.resolver_match.url_name == 'create' %}active{% endif %}">Create Question</a>
+							
+							<div class="dropdown">
+								<a class="nav-link nav-link dropdown-toggle ms-3 {% if request.resolver_match.url_name == 'create' %}active{% elif request.resolver_match.url_name == 'upload_csv' %}active{% endif %}" data-bs-toggle="dropdown" href="#" aria-expanded="false">Create Question</a>
+								<ul class="dropdown-menu drop-navbar">
+									<li><a class="dropdown-item" href="{% url 'create' %}">Individual Question</a></li>
+									<li><a class="dropdown-item" href="{% url 'upload_csv' %}">Bulk Import</a></li>
+								</ul>
+							</div>
+							
+							<a href="{% url 'user_questions' %}" class="nav-item nav-link btn-link ms-3 {% if request.resolver_match.url_name == 'questions' %}active{% endif %}">Your Questions</a>
 						{% endif %}
 						
 						
