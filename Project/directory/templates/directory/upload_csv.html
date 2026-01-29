@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block head_block %}
+	
+	<meta name="description" content="">
+	
+{% endblock %}
+
+
+
+{% block header %}
+	
+	<!-- Hero Header -->
+	<div class="py-5 bg-dark hero-header mb-5">
+		<img src="{% static 'img/bg-hero.webp' %}" alt="Hero background" fetchpriority="high">
+		<div class="container hero-content text-center my-2 pt-5 pb-4">
+			<h1 class="display-3 text-white mb-3 animated fadeInDown roboto-font">Upload CSV</h1>
+			<nav aria-label="breadcrumb">
+			<ol class="breadcrumb justify-content-center">
+				<li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+				<li class="breadcrumb-item text-white active" aria-current="page">Upload CSV</li>
+			</ol>
+			</nav>
+		</div>
+	</div>
+	
+{% endblock %}
+
+
+
+
+{% block content %}
+	
+	
+	<form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+	
+	
+	
+{% endblock %}

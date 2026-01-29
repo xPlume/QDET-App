@@ -22,3 +22,11 @@ class AnswerForm(forms.ModelForm):
 	#class Meta
 	
 #class AnswerForm
+
+
+
+class CSVuploadForm(forms.Form):
+	
+	file = forms.FileField(label='Select a .csv file')
+	
+#class
