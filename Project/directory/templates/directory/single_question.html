@@ -37,15 +37,29 @@
 	
 	<div class="container ">
 		
-		<!--Context -->
-		<div class="jumbotron">
-			<h1 class="display-4">
-				Context
-			</h1>
-			<hr class="my-4">
+		
+		
+		
+		<!-- Chapter text -->
+		<div class="container">
+			<div class="row">
+				<div class="col-0 col-md-2"></div>
+				<div class="col-12 col-lg-8">
+					
+					<!--Context -->
+					<div class="jumbotron">
+						<h1 class="display-4">
+							Context
+						</h1>
+					</div>
+					
+					<p>{{ question.context|linebreaks }}</p>
+				</div>
+				<div class="col-0 col-md-2"></div>
+			</div>
 		</div>
 		
-		<p>{{ question.context|linebreaks }}</p>
+		
 		
 		<hr class="my-5">
 		
@@ -57,13 +71,24 @@
 		
 		
 		{% for answer in answers %}
-			<p class="lead">
-				{% if answer.is_correct is True %}
-					<i class="fa-solid fa-square-check fa-lg text-success me-2"></i>{{ answer.answer }} -- Correct answer
-				{% else %}
-					<i class="fa-solid fa-square-xmark fa-lg text-danger me-2"></i>{{ answer.answer }}
-				{% endif %}
-			</p>
+			
+			<div class="container">
+				<div class="row">
+					<div class="col-0 col-md-2"></div>
+					<div class="col-12 col-lg-8">
+						<p class="lead">
+							{% if answer.is_correct is True %}
+								<i class="fa-solid fa-square-check fa-lg text-success me-2"></i>{{ answer.answer }} -- Correct answer
+							{% else %}
+								<i class="fa-solid fa-square-xmark fa-lg text-danger me-2"></i>{{ answer.answer }}
+							{% endif %}
+						</p>
+					</div>
+					<div class="col-0 col-md-2"></div>
+				</div>
+			</div>
+			
+			
 		{% endfor %}
 		
 		
