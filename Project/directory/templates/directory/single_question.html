@@ -16,12 +16,12 @@
 	<div class="py-5 bg-dark hero-header mb-5">
 		<img src="{% static 'img/bg-hero.webp' %}" alt="Hero background" fetchpriority="high">
 		<div class="container hero-content text-center my-2 pt-5 pb-4">
-			<h1 class="display-3 text-white mb-3 animated fadeInDown roboto-font">Question {{ question.id }}</h1>
+			<h1 class="display-3 text-white mb-3 animated fadeInDown roboto-font">Question {{ question.q_id }}</h1>
 			<nav aria-label="breadcrumb">
 			<ol class="breadcrumb justify-content-center">
 				<li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
 				<li class="breadcrumb-item"><a href="{% url 'user_questions' %}">MCQs</a></li>
-				<li class="breadcrumb-item text-white active" aria-current="page">Question {{ question.id }}</li>
+				<li class="breadcrumb-item text-white active" aria-current="page">Question {{ question.q_id }}</li>
 			</ol>
 			</nav>
 		</div>
@@ -34,20 +34,41 @@
 
 {% block content %}
 	
-	<p>{{ question.context }}</p>
 	
-	<p>{{ question.question }}</p>
+	<div class="container ">
+		
+		<!--Context -->
+		<div class="jumbotron">
+			<h1 class="display-4">
+				Context
+			</h1>
+			<hr class="my-4">
+		</div>
+		
+		<p>{{ question.context|linebreaks }}</p>
+		
+		<hr class="my-5">
+		
+		
+		<!-- Question -->
+		<div class="d-flex justify-content-center">
+			<h4 class="">{{ question.question|linebreaks }}</h3>
+		</div>
+		
+		
+		{% for answer in answers %}
+			<p class="lead">
+				{% if answer.is_correct is True %}
+					<i class="fa-solid fa-square-check fa-lg text-success me-2"></i>{{ answer.answer }} -- Correct answer
+				{% else %}
+					<i class="fa-solid fa-square-xmark fa-lg text-danger me-2"></i>{{ answer.answer }}
+				{% endif %}
+			</p>
+		{% endfor %}
+		
+		
+	</div>
 	
-	{% for answer in answers %}
-		
-		
-		<p>
-			- {{ answer.answer }}
-			{% if answer.is_correct is True %}
-				-- Correct answer
-			{% endif %}
-		</p>
-		
-	{% endfor %}
+	<div class="py-5"></div>
 	
 {% endblock %}
