@@ -33,67 +33,65 @@
 
 
 {% block content %}
-	
-	
-	<div class="container ">
-		
-		
-		
-		
-		<!-- Chapter text -->
-		<div class="container">
-			<div class="row">
-				<div class="col-0 col-md-2"></div>
-				<div class="col-12 col-lg-8">
-					
-					<!--Context -->
-					<div class="jumbotron">
-						<h1 class="display-4">
-							Context
-						</h1>
-					</div>
-					
-					<p>{{ question.context|linebreaks }}</p>
-				</div>
-				<div class="col-0 col-md-2"></div>
-			</div>
-		</div>
-		
-		
-		
-		<hr class="my-5">
-		
-		
-		<!-- Question -->
-		<div class="d-flex justify-content-center">
-			<h4 class="">{{ question.question|linebreaks }}</h3>
-		</div>
-		
-		
-		{% for answer in answers %}
-			
-			<div class="container">
-				<div class="row">
-					<div class="col-0 col-md-2"></div>
-					<div class="col-12 col-lg-8">
-						<p class="lead">
-							{% if answer.is_correct is True %}
-								<i class="fa-solid fa-square-check fa-lg text-success me-2"></i>{{ answer.answer }} -- Correct answer
-							{% else %}
-								<i class="fa-solid fa-square-xmark fa-lg text-danger me-2"></i>{{ answer.answer }}
-							{% endif %}
-						</p>
-					</div>
-					<div class="col-0 col-md-2"></div>
-				</div>
-			</div>
-			
-			
-		{% endfor %}
-		
-		
-	</div>
-	
-	<div class="py-5"></div>
-	
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+
+            <div class="card shadow-sm border-secondary-subtle">
+                <div class="card-body p-4 p-md-5">
+                    
+                    <div class="context-section mb-4 px-4 py-3 bg-light rounded-3" style="border-left: 5px solid #6c757d;">
+                        <h6 class="text-uppercase text-muted fw-bold small mb-2">Background Context</h6>
+                        <div class="text-dark lead" style="font-size: 1.05rem; line-height: 1.7;">
+                            {{ question.context }}
+                        </div>
+                    </div>
+
+                    <div class="question-text mb-4">
+                        <h4 class="fw-bold lh-base">
+                            <span class="badge bg-primary me-2">Question {{ question.id }}</span>
+                            {{ question.question }}
+                        </h4>
+                    </div>
+
+                    <div class="answers-container p-3 p-md-4 border rounded-3 bg-white">
+                        <p class="text-muted small fw-bold text-uppercase mb-3">Options:</p>
+                        
+                        <div class="list-group list-group-flush">
+                            {% for answer in answers %}
+                                <div class="list-group-item border rounded-3 mb-2 px-3 py-3 d-flex justify-content-between align-items-center
+                                    {% if answer.is_correct %}
+                                        border-success-subtle
+                                    {% endif %}"
+                                    {% if answer.is_correct %}
+                                        style="background-color: #d1e7dd; border-width: 2px;"
+                                    {% endif %}>
+                                    
+                                    <div class="d-flex align-items-start">
+                                        <span class="me-3 fw-bold text-muted">{{ forloop.counter }}.</span>
+                                        <span class="{% if answer.is_correct %}fw-bold text-success{% endif %}">
+                                            {{ answer.answer }}
+                                        </span>
+                                    </div>
+
+                                    {% if answer.is_correct %}
+                                        <span class="badge bg-success shadow-sm">
+                                            <i class="fas fa-check me-1"></i> Correct
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            {% empty %}
+                                <p class="text-muted italic">No choices provided.</p>
+                            {% endfor %}
+                        </div>
+                    </div> </div>
+            </div> <div class="mt-4 d-flex justify-content-between">
+                <a href="{% url 'user_questions' %}" class="btn btn-link text-decoration-none text-muted">
+                    ← Back to List
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
 {% endblock %}
