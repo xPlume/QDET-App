@@ -40,21 +40,21 @@
             <div class="card shadow-sm border-secondary-subtle">
                 <div class="card-body p-4 p-md-5">
                     
-                    <div class="context-section mb-4 px-4 py-3 bg-light rounded-3" style="border-left: 5px solid #6c757d;">
+                    <div class="mb-4 px-4 py-3 rounded-3" style="border-left: 5px solid #6c757d;">
                         <h6 class="text-uppercase text-muted fw-bold small mb-2">Background Context</h6>
-                        <div class="text-dark lead" style="font-size: 1.05rem; line-height: 1.7;">
-                            {{ question.context }}
+                        <div class="lead" style="font-size: 1.05rem; line-height: 1.7;">
+                            {{ question.context|linebreaks }}
                         </div>
                     </div>
 
-                    <div class="question-text mb-4">
+                    <div class="mb-4">
                         <h4 class="fw-bold lh-base">
-                            <span class="badge bg-primary me-2">Question {{ question.id }}</span>
+                            <span class="badge bg-primary me-2">Question {{ question.q_id }}</span>
                             {{ question.question }}
                         </h4>
                     </div>
 
-                    <div class="answers-container p-3 p-md-4 border rounded-3 bg-white">
+                    <div class="p-3 p-md-4 border rounded-3">
                         <p class="text-muted small fw-bold text-uppercase mb-3">Options:</p>
                         
                         <div class="list-group list-group-flush">
@@ -62,10 +62,9 @@
                                 <div class="list-group-item border rounded-3 mb-2 px-3 py-3 d-flex justify-content-between align-items-center
                                     {% if answer.is_correct %}
                                         border-success-subtle
+										bg-success-subtle
                                     {% endif %}"
-                                    {% if answer.is_correct %}
-                                        style="background-color: #d1e7dd; border-width: 2px;"
-                                    {% endif %}>
+                                    >
                                     
                                     <div class="d-flex align-items-start">
                                         <span class="me-3 fw-bold text-muted">{{ forloop.counter }}.</span>
