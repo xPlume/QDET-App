@@ -11,8 +11,6 @@ urlpatterns = [
 	path("upload/", views.upload_csv, name="upload_csv"),
 	path("questions/", views.user_questions, name="user_questions"),
 	path("questions/<int:question_id>", views.single_question, name="single_question"),
-	
-	
-	path("logout/", LogoutView.as_view(next_page="index"), name="logout"),
+	path("questions/<int:question_id>/update", views.update_question, name="update_question"),
 	
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -84,11 +84,24 @@
                             {% endfor %}
                         </div>
                     </div> </div>
-            </div> <div class="mt-4 d-flex justify-content-between">
+            </div>
+			
+			
+			<!-- Update Question -->
+			<div class="d-flex justify-content-end">
+				<a href="{% url 'update_question' question.id %}">
+					<button type="button" class="btn btn-lg btn-outline-primary m-5">Update question</button>
+				</a>
+			</div>
+			
+			
+			<div class="my-3http://127.0.0.1:8000/questions/12/update d-flex justify-content-between">
                 <a href="{% url 'user_questions' %}" class="btn btn-link text-decoration-none text-muted">
                     ← Back to List
                 </a>
             </div>
+			
+			
 
         </div>
     </div>
