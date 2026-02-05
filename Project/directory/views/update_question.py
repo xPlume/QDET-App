@@ -22,7 +22,7 @@ def update_question(request, question_id):
 	)
 	
 	
-	AnswerFormSet = modelformset_factory(Answer, fields=['answer', 'is_correct'], can_delete=True, extra=1)
+	AnswerFormSet = modelformset_factory(Answer, fields=['answer', 'is_correct'], can_delete=True, extra=0)
 	
 	if request.method == 'POST':
 		

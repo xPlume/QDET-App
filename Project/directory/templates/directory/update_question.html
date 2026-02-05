@@ -104,6 +104,7 @@
 						{{ form.id }}
 						<div class="d-none">{{ form.DELETE }}</div>
 						
+						<!-- Text Area -->
 						<div class="mb-3">
 							<label class="form-label answer-label">Answer</label>
 							<div class="input-group">
@@ -113,18 +114,49 @@
 							</div>
 						</div>
 						
+						<!-- Correct Answer -->
 						<div class="form-check form-switch mt-2">
 							<input class="form-check-input" name="{{ form.is_correct.html_name }}" type="checkbox" {% if form.is_correct.value %}checked{% endif %}>
 							<label class="form-check-label">Set as Correct Answer</label>
 						</div>
+						
+						
 					</div>
 				{% endfor %}
 				
-				<button id="add-answer" type="button" class="btn btn-primary mt-3">Add Answer</button>
+				
+				<!-- New Answer button -->
+				<button type="button" class="btn btn-primary my-3" id="add-answer">Add Answer</button>
 				
 			</div>
 			
 			
+			<!-- Adding new answers -->
+			<div id="empty-answer-form-template" style="display: none;">
+				<div class="formset-form mb-4 pb-2">
+					{{ answer_formset.empty_form.id }}
+					<div class="d-none">{{ answer_formset.empty_form.DELETE }}</div>
+					
+					<!-- Text Area -->
+					<div class="mb-3">
+						<label class="form-label answer-label">New answer</label>
+						<div class="input-group">
+							<textarea name="{{ answer_formset.empty_form.answer.html_name }}" id="{{ answer_formset.empty_form.answer.id_for_label }}" class="form-control" rows="3"></textarea>
+							<button type="button" class="btn btn-outline-danger delete-answer-btn">Delete</button>
+						</div>
+					</div>
+					
+					<!-- Correct Answer -->
+					<div class="form-check form-switch mt-2">
+						<input class="form-check-input" name="{{ answer_formset.empty_form.is_correct.html_name }}" id="{{ answer_formset.empty_form.is_correct.id_for_label }}" type="checkbox" style="transform: scale(1.2);">
+						<label class="form-check-label">Set as Correct Answer</label>
+					</div>
+					
+				</div>
+			</div>
+			
+			
+			<!-- Answer(s) END -->
 			
 			
 			
@@ -146,6 +178,7 @@
 		const formContainer = document.getElementById('answer-formset-container');
 		const addBtn = document.getElementById('add-answer');
 		const totalForms = document.getElementById('id_answers-TOTAL_FORMS');
+		const emptyFormTemplate = document.getElementById('empty-answer-form-template');
 
 		// 1. Helper: Update visible labels (Answer 1, Answer 2...)
 		function updateAnswerLabels() {
@@ -159,80 +192,77 @@
 			});
 		}
 
-		// 2. Helper: The Delete Logic
-		function attachDeleteEvent(row) {
-			const deleteBtn = row.querySelector('.delete-answer-btn');
-			if (!deleteBtn) return; // Guard clause in case button is missing
+		// 2. Event Delegation for Deleting
+		// We listen for clicks on the CONTAINER. This handles existing and NEW buttons.
+		formContainer.addEventListener('click', function (e) {
+			// Check if the clicked element (or its parent) is a delete button
+			const deleteBtn = e.target.closest('.delete-answer-btn');
+			if (!deleteBtn) return; // Exit if we clicked something else
 
-			deleteBtn.onclick = function () { // Use onclick to prevent duplicate listeners
-				// Check if this row has an ID (meaning it exists in the database)
-				const idInput = row.querySelector('input[name$="-id"]');
-				
-				if (idInput) {
-					// IT EXISTS IN DB: Soft Delete (Hide + Check DELETE box)
-					const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
-					if (deleteCheckbox) {
-						deleteCheckbox.checked = true;
-						row.classList.add('d-none');
-					}
-				} else {
-					// IT IS NEW: Hard Delete (Remove from DOM)
-					row.remove();
-					// Update total forms count to prevent validation gaps
-					totalForms.value = parseInt(totalForms.value) - 1;
-				}
-				updateAnswerLabels();
-			};
-		}
+			const row = deleteBtn.closest('.formset-form');
+			const idInput = row.querySelector('input[name$="-id"]');
 
-		// 3. Initialize Delete on existing rows
-		document.querySelectorAll('#answer-formset-container .formset-form').forEach(row => {
-			attachDeleteEvent(row);
-		});
-
-		// 4. Add New Answer Logic (Cloning Method)
-		addBtn.addEventListener('click', function () {
-			// Find the first form to use as a blueprint
-			const forms = formContainer.querySelectorAll('.formset-form');
-			if (forms.length === 0) return; // Should not happen with extra=1
-			
-			const sourceForm = forms[0]; 
-			const newForm = sourceForm.cloneNode(true);
-			const currentFormCount = parseInt(totalForms.value);
-
-			// A. Regex to replace indices (e.g., answers-0- to answers-5-)
-			// We use a regex that catches any number between hyphens
-			const regex = /answers-\d+-/g;
-			newForm.innerHTML = newForm.innerHTML.replace(regex, `answers-${currentFormCount}-`);
-
-			// B. Clear Values & Reset Visibility
-			newForm.classList.remove('d-none'); // Make sure it's visible even if we cloned a hidden one
-			newForm.querySelectorAll('input, textarea').forEach(el => {
-				if (el.type === 'checkbox') {
-					el.checked = false; // Uncheck 'Correct' and 'DELETE' boxes
-				} else {
-					el.value = ''; // Clear text
-				}
-			});
-
-			// C. CRITICAL FIX: Remove the hidden ID input
-			// This tells Django: "This is a brand new object, not an update"
-			const hiddenId = newForm.querySelector('input[name$="-id"]');
-			if (hiddenId) {
-				hiddenId.remove();
+			if (idInput && idInput.value !== "") {
+				// DATABASE RECORD: Soft Delete
+				const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
+				if (deleteCheckbox) deleteCheckbox.checked = true;
+				row.classList.add('d-none');
+			} else {
+				// NEW RECORD: Remove from DOM
+				row.remove();
+				totalForms.value = parseInt(totalForms.value) - 1;
 			}
-
-			// D. Attach behavior to the new delete button
-			attachDeleteEvent(newForm);
-
-			// E. Append and update count
-			formContainer.appendChild(newForm);
-			totalForms.value = currentFormCount + 1;
 			updateAnswerLabels();
 		});
 
-		// Initial label update
+		// 3. Add Answer Logic
+		addBtn.addEventListener('click', function (e) {
+			e.preventDefault();
+			const currentCount = parseInt(totalForms.value);
+			const emptyFormHtml = emptyFormTemplate.innerHTML;
+
+			// Replace __prefix__ with the number
+			const newFormHtml = emptyFormHtml.replace(/__prefix__/g, currentCount);
+
+			// UI CHANGE: Insert the HTML BEFORE the button, not at the end of the container
+			addBtn.insertAdjacentHTML('beforebegin', newFormHtml);
+
+			// Increment count
+			totalForms.value = currentCount + 1;
+			updateAnswerLabels();
+		});
+
+		// Run labels once on load
 		updateAnswerLabels();
+	});
+	
+	
+	
+	// Adding new answer boxes
+	document.getElementById('add-answer').addEventListener('click', function(e) {
+		// Get the management form field that tracks the total number of forms.
+		// Adjust the id according to your formset's prefix. For example, if you haven't set a custom prefix,
+		// Django defaults to "form", and the field's id is "id_form-TOTAL_FORMS".
+		// If you set a custom prefix (e.g. "answer"), then use "id_answer-TOTAL_FORMS".
+		var totalForms = document.getElementById('id_form-TOTAL_FORMS');
+		var currentCount = parseInt(totalForms.value);
+		
+		// Retrieve the HTML from the hidden empty form template.
+		var emptyFormHtml = document.getElementById('empty-answer-form-template').innerHTML;
+		
+		// Replace all occurrences of the __prefix__ placeholder with the new form index.
+		var newFormHtml = emptyFormHtml.replace(/__prefix__/g, currentCount);
+		
+		// Append the new form to the formset container.
+		var container = document.getElementById('answer-formset-container');
+		container.insertAdjacentHTML('beforeend', newFormHtml);
+		
+		// Increment the TOTAL_FORMS count so Django processes the new form.
+		totalForms.value = currentCount + 1;
+		
+		if (typeof updateAnswerLabels === "function") {
+			updateAnswerLabels();
+		}
 	});
 	</script>
 	
