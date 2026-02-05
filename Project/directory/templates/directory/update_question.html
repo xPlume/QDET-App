@@ -93,6 +93,39 @@
 			
 			
 			
+			<!-- Answer(s) -->
+			{{ answer_formset.management_form }}
+			<label class="form-label mt-3">Answer(s)</label>
+			
+			<div class="px-4" id="answer-formset-container">
+				{% for form in answer_formset %}
+					<div class="formset-form mb-4 pb-2">
+					
+						{{ form.id }}
+						<div class="d-none">{{ form.DELETE }}</div>
+						
+						<div class="mb-3">
+							<label class="form-label answer-label">Answer</label>
+							<div class="input-group">
+								<textarea name="{{ form.answer.html_name }}" class="form-control" rows="3">{{ form.answer.value|default_if_none:"" }}</textarea>
+								<button type="button" class="btn btn-outline-danger delete-answer-btn">
+									Delete</button>
+							</div>
+						</div>
+						
+						<div class="form-check form-switch mt-2">
+							<input class="form-check-input" name="{{ form.is_correct.html_name }}" type="checkbox" {% if form.is_correct.value %}checked{% endif %}>
+							<label class="form-check-label">Set as Correct Answer</label>
+						</div>
+					</div>
+				{% endfor %}
+				
+				<button id="add-answer" type="button" class="btn btn-primary mt-3">Add Answer</button>
+				
+			</div>
+			
+			
+			
 			
 			
 			<!-- Submit button -->
@@ -107,57 +140,98 @@
 	
 	
 	
-	<!-- Add JavaScript to handle adding more forms -->
+	<!-- JavaScript to handle adding forms and delition -->
 	<script>
 	document.addEventListener('DOMContentLoaded', function () {
 		const formContainer = document.getElementById('answer-formset-container');
 		const addBtn = document.getElementById('add-answer');
-		const removeBtn = document.getElementById('remove-answer');
 		const totalForms = document.getElementById('id_answers-TOTAL_FORMS');
-		
-		let formNum = formContainer.children.length;
-		
-		// Making the Answer conter (Answer 1, Answer 2...) work
+
+		// 1. Helper: Update visible labels (Answer 1, Answer 2...)
 		function updateAnswerLabels() {
-			document.querySelectorAll('#answer-formset-container .formset-form')
-			.forEach((form, index) => {
-				const label = form.querySelector('.answer-label');
-				if (label) {
-					label.textContent = `Answer ${index + 1}`;
+			let visibleIndex = 0;
+			document.querySelectorAll('#answer-formset-container .formset-form').forEach((row) => {
+				if (!row.classList.contains('d-none')) {
+					visibleIndex++;
+					const label = row.querySelector('.answer-label');
+					if (label) label.textContent = `Answer ${visibleIndex}`;
 				}
 			});
 		}
-		
-		// Adding a new answer box
+
+		// 2. Helper: The Delete Logic
+		function attachDeleteEvent(row) {
+			const deleteBtn = row.querySelector('.delete-answer-btn');
+			if (!deleteBtn) return; // Guard clause in case button is missing
+
+			deleteBtn.onclick = function () { // Use onclick to prevent duplicate listeners
+				// Check if this row has an ID (meaning it exists in the database)
+				const idInput = row.querySelector('input[name$="-id"]');
+				
+				if (idInput) {
+					// IT EXISTS IN DB: Soft Delete (Hide + Check DELETE box)
+					const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
+					if (deleteCheckbox) {
+						deleteCheckbox.checked = true;
+						row.classList.add('d-none');
+					}
+				} else {
+					// IT IS NEW: Hard Delete (Remove from DOM)
+					row.remove();
+					// Update total forms count to prevent validation gaps
+					totalForms.value = parseInt(totalForms.value) - 1;
+				}
+				updateAnswerLabels();
+			};
+		}
+
+		// 3. Initialize Delete on existing rows
+		document.querySelectorAll('#answer-formset-container .formset-form').forEach(row => {
+			attachDeleteEvent(row);
+		});
+
+		// 4. Add New Answer Logic (Cloning Method)
 		addBtn.addEventListener('click', function () {
-			const newForm = formContainer.children[0].cloneNode(true);
-			const formRegex = RegExp(`answers-(\\d+)-`, 'g');
+			// Find the first form to use as a blueprint
+			const forms = formContainer.querySelectorAll('.formset-form');
+			if (forms.length === 0) return; // Should not happen with extra=1
 			
-			newForm.innerHTML = newForm.innerHTML.replace(formRegex, `answers-${formNum}-`);
-			
+			const sourceForm = forms[0]; 
+			const newForm = sourceForm.cloneNode(true);
+			const currentFormCount = parseInt(totalForms.value);
+
+			// A. Regex to replace indices (e.g., answers-0- to answers-5-)
+			// We use a regex that catches any number between hyphens
+			const regex = /answers-\d+-/g;
+			newForm.innerHTML = newForm.innerHTML.replace(regex, `answers-${currentFormCount}-`);
+
+			// B. Clear Values & Reset Visibility
+			newForm.classList.remove('d-none'); // Make sure it's visible even if we cloned a hidden one
 			newForm.querySelectorAll('input, textarea').forEach(el => {
-				if (el.type === 'checkbox') el.checked = false;
-				else el.value = '';
+				if (el.type === 'checkbox') {
+					el.checked = false; // Uncheck 'Correct' and 'DELETE' boxes
+				} else {
+					el.value = ''; // Clear text
+				}
 			});
-			
-			formContainer.appendChild(newForm);
-			totalForms.value = ++formNum;
-			updateAnswerLabels();
-		});
-		
-		
-		// Removing an answer box
-		removeBtn.addEventListener('click', function () {
-			if (formNum > 1) {
-			formContainer.removeChild(formContainer.lastElementChild);
-			totalForms.value = --formNum;
-			updateAnswerLabels();
-			} else {
-				alert("You need to keep at least one answer.");
+
+			// C. CRITICAL FIX: Remove the hidden ID input
+			// This tells Django: "This is a brand new object, not an update"
+			const hiddenId = newForm.querySelector('input[name$="-id"]');
+			if (hiddenId) {
+				hiddenId.remove();
 			}
+
+			// D. Attach behavior to the new delete button
+			attachDeleteEvent(newForm);
+
+			// E. Append and update count
+			formContainer.appendChild(newForm);
+			totalForms.value = currentFormCount + 1;
+			updateAnswerLabels();
 		});
-		
-		// Ensure correct numbering on initial load
+
+		// Initial label update
 		updateAnswerLabels();
 	});
 	</script>
