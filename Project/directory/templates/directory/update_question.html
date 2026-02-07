@@ -87,7 +87,7 @@
 			<!-- Question Text Area -->
 			<div class="mb-3">
 				<label class="form-label">Question</label>
-				<textarea required name="question" class="form-control" rows="3">{{ question.question }}</textarea>
+				<textarea required name="question" class="form-control" rows="1">{{ question.question }}</textarea>
 			</div>
 			
 			
@@ -108,7 +108,7 @@
 						<div class="mb-3">
 							<label class="form-label answer-label">Answer</label>
 							<div class="input-group">
-								<textarea name="{{ form.answer.html_name }}" class="form-control" rows="3">{{ form.answer.value|default_if_none:"" }}</textarea>
+								<textarea name="{{ form.answer.html_name }}" class="form-control" rows="1">{{ form.answer.value|default_if_none:"" }}</textarea>
 								<button type="button" class="btn btn-outline-danger delete-answer-btn">
 									Delete</button>
 							</div>
@@ -141,7 +141,7 @@
 					<div class="mb-3">
 						<label class="form-label answer-label">New answer</label>
 						<div class="input-group">
-							<textarea name="{{ answer_formset.empty_form.answer.html_name }}" id="{{ answer_formset.empty_form.answer.id_for_label }}" class="form-control" rows="3"></textarea>
+							<textarea name="{{ answer_formset.empty_form.answer.html_name }}" id="{{ answer_formset.empty_form.answer.id_for_label }}" class="form-control" rows="1"></textarea>
 							<button type="button" class="btn btn-outline-danger delete-answer-btn">Delete</button>
 						</div>
 					</div>
@@ -215,22 +215,7 @@
 			updateAnswerLabels();
 		});
 
-		// 3. Add Answer Logic
-		addBtn.addEventListener('click', function (e) {
-			e.preventDefault();
-			const currentCount = parseInt(totalForms.value);
-			const emptyFormHtml = emptyFormTemplate.innerHTML;
-
-			// Replace __prefix__ with the number
-			const newFormHtml = emptyFormHtml.replace(/__prefix__/g, currentCount);
-
-			// UI CHANGE: Insert the HTML BEFORE the button, not at the end of the container
-			addBtn.insertAdjacentHTML('beforebegin', newFormHtml);
-
-			// Increment count
-			totalForms.value = currentCount + 1;
-			updateAnswerLabels();
-		});
+		
 
 		// Run labels once on load
 		updateAnswerLabels();

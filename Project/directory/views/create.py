@@ -12,7 +12,7 @@ from django.forms import modelformset_factory
 @login_required
 def create(request):
 	
-	AnswerFormSet = modelformset_factory(Answer, fields=['answer', 'is_correct'], extra=1)
+	AnswerFormSet = modelformset_factory(Answer, fields=['answer', 'is_correct'], extra=4)
 	prefix = "answers"
 	
 	
