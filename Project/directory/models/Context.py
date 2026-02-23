@@ -4,16 +4,12 @@ from django.conf import settings
 from login.models import ActiveUserManager
 User = settings.AUTH_USER_MODEL
 
-from directory.models import Context
-
-class Question(models.Model):
+class Context(models.Model):
 	
-	q_id = models.TextField(null=False, default=None)
-	question = models.TextField(null=False, default=None)
-	target_level = models.TextField(null=False, default=None)
+	context_id = models.IntegerField(blank=False, null=False)
+	context = models.TextField(null=False, default=None)
 	
 	uploader = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
-	context = models.ForeignKey(Context, null=False, on_delete=models.CASCADE)
 	
 	objects = ActiveUserManager(user_field='uploader')
 	all_objects = models.Manager()
@@ -22,4 +18,4 @@ class Question(models.Model):
 		return f"{self.id}"
 	#def __str__
 	
-#class Question
+#class Context

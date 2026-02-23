@@ -13,7 +13,7 @@ def user_questions(request):
 	
 	questions = Question.objects.filter(
 		uploader = user
-	)
+	).order_by('-id')
 	
 	# Restricting the queryset to 50 object, not more
 	paginator = Paginator(questions, 50)

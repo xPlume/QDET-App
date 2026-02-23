@@ -1,5 +1,6 @@
 from .index import index
-from .create import create
+from .new_context import new_context
+from .new_question import new_question
 from .upload_csv import upload_csv
 from .user_questions import user_questions
 from .single_question import single_question

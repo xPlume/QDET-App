@@ -1,16 +1,19 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 
-from directory.models import Question, Answer
-from directory.forms import QuestionForm
+from directory.models import Context, Question, Answer
+from directory.forms import ContextForm, QuestionForm
 
 from django.forms import modelformset_factory
 
 
 @login_required
-def create(request):
+def new_question(request, context_id):
+	
+	
+	context = get_object_or_404(Context, id=context_id)
 	
 	AnswerFormSet = modelformset_factory(Answer, fields=['answer', 'is_correct'], extra=4)
 	prefix = "answers"
@@ -23,12 +26,30 @@ def create(request):
 		
 		if new_question_form.is_valid() and answer_formset.is_valid():
 			
+			# Handling the Question (saving later)
 			new_question_instance = new_question_form.save(commit=False)
 			new_question_instance.uploader = request.user
-			new_question_instance.save()
+			new_question_instance.context = context
+			
 			
 			# Handling the answers
 			answer_formset_instance = answer_formset.save(commit=False)
+			
+			# Checking if at least one answer has the is_correct = True
+			if not any(instance.is_correct for instance in answer_formset_instance):
+				messages.error(request, "You must mark at least one answer as correct.", extra_tags="danger")
+				
+				return redirect('new_question')
+			#if 
+			
+			
+			
+			# If all good, save.
+			
+			# Saving the Question
+			new_question_instance.save()
+			
+			# Saving the Answers
 			for instance in answer_formset_instance:
 				instance.question_linked = new_question_instance
 				instance.save()
@@ -40,7 +61,7 @@ def create(request):
 		
 		else:
 			messages.error(request, new_question_form.errors, extra_tags="danger")
-			return redirect('create')
+			return redirect('new_question')
 		#else
 		
 	#if
@@ -53,7 +74,7 @@ def create(request):
 	
 	
 	
-	template_name = "directory/create.html"
+	template_name = "directory/new_question.html"
 	context = {
 		"new_question_form": new_question_form,
 		"answer_formset": answer_formset,
@@ -62,4 +83,4 @@ def create(request):
 	
 	return render(request, template_name, context)
 	
-#def create
+#def new_question

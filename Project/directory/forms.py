@@ -1,6 +1,16 @@
 from django import forms
 
-from .models import Question, Answer
+from .models import Context, Question, Answer
+
+
+class ContextForm(forms.ModelForm):
+	
+	class Meta:
+		model = Context
+		fields = ['context_id', 'context']
+	#class Meta	
+	
+#class ContextForm
 
 
 
@@ -8,7 +18,7 @@ class QuestionForm(forms.ModelForm):
 	
 	class Meta:
 		model = Question
-		fields = ['context_id', 'context', 'q_id', 'question', 'target_level']
+		fields = ['q_id', 'question', 'target_level']
 	#class Meta	
 	
 #class QuestionForm

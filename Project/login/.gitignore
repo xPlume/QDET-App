@@ -1,0 +1,5 @@
+__pycache__
+views/__pycache__
+models/__pycache__
+migrations/__pycache__
+forms/__pycache__
