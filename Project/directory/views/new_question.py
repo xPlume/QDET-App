@@ -76,6 +76,7 @@ def new_question(request, context_id):
 	
 	template_name = "directory/new_question.html"
 	context = {
+		"context": context,
 		"new_question_form": new_question_form,
 		"answer_formset": answer_formset,
 		"prefix": prefix,

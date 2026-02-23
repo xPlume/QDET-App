@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from directory.models import Question, Answer
-from directory.forms import QuestionForm
+from directory.models import Context, Question, Answer
+from directory.forms import ContextForm, QuestionForm
 from directory.decorators import question_creator
 
 from django.forms import modelformset_factory
@@ -26,14 +26,22 @@ def update_question(request, question_id):
 	
 	if request.method == 'POST':
 		
+		update_context = ContextForm(request.POST, instance=question.context)
 		update_question = QuestionForm(request.POST, instance=question)
 		answer_formset = AnswerFormSet(request.POST, queryset=answers)
 		
-		if update_question.is_valid() and answer_formset.is_valid():
+		if update_context.is_valid() and update_question.is_valid() and answer_formset.is_valid():
+			
+			# Updating context
+			update_instance = update_context.save(commit=False)
+			update_instance.uploader = request.user
+			update_instance.save()
+			
 			
 			# Updating question
 			update_instance = update_question.save(commit=False)
 			update_instance.uploader = request.user
+			update_instance.context = question.context
 			update_instance.save()
 			
 			
@@ -62,6 +70,7 @@ def update_question(request, question_id):
 	#if
 	
 	else:
+		update_context = ContextForm(instance=question.context)
 		update_question = QuestionForm(instance=question)
 		answer_formset = AnswerFormSet(queryset=answers)
 	#else
@@ -71,6 +80,7 @@ def update_question(request, question_id):
 	context = {
 		"question": question,
 		"answers": answers,
+		"update_context": update_context,
 		"update_question": update_question,
 		"answer_formset": answer_formset,
 	}

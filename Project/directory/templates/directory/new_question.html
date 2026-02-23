@@ -33,7 +33,29 @@
 
 {% block content %}
 	
+<!-- Context -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+
+            <div class="card shadow-sm border-secondary-subtle">
+                <div class="card-body p-4 p-md-5">
+                    
+                    <div class="mb-4 px-4 py-3 rounded-3" style="border-left: 5px solid #6c757d;">
+                        <h6 class="text-uppercase text-muted fw-bold small mb-2">{{ context.context_id }} - {{ context.context_title }}</h6>
+                        <div class="lead" style="font-size: 1.05rem; line-height: 1.7;">
+                            {{ context.context|linebreaks }}
+                        </div>
+                    </div>
+                 </div>
+                </div>
+        </div>
+    </div>
+</div>
 	
+	
+	
+	<!-- Question form -->
 	<div class="mt-4"></div>
 	
 	<!-- Form start -->
@@ -48,14 +70,8 @@
 			<!-- Basic Info -->
 			<div class="row">
 				
-				<!-- Context ID -->
-				<div class="col-12 col-sm-4 form-floating mb-3">
-					<input required name="context_id" type="number" placeholder="Context ID" class="form-control">
-					<label class="ms-3" for="floatingInput">Context ID</label>
-				</div>
-				
 				<!-- Question ID -->
-				<div class="col-12 col-sm-4 form-floating mb-3">
+				<div class="col-12 col-sm-6 form-floating mb-3">
 					<input required
 						class="form-control"
 						type="text"
@@ -66,18 +82,10 @@
 				</div>
 				
 				<!-- Target Level -->
-				<div class="col-12 col-sm-4 form-floating mb-3">
+				<div class="col-12 col-sm-6 form-floating mb-3">
 					<input required name="target_level" type="text" placeholder="Target Level" class="form-control">
 					<label class="ms-3" for="floatingInput">Target Level</label>
 				</div>
-			</div>
-			
-			
-			
-			<!-- Context Text Area -->
-			<div class="mb-3">
-				<label class="form-label">Context</label>
-				<textarea name="context" class="form-control" rows="3"></textarea>
 			</div>
 			
 			

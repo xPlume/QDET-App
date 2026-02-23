@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 
 from django.contrib.auth.decorators import login_required
 
-from directory.models import Question, Answer
+from directory.models import Context, Question, Answer
 from directory.decorators import question_creator
 
 

@@ -41,9 +41,9 @@
                 <div class="card-body p-4 p-md-5">
                     
                     <div class="mb-4 px-4 py-3 rounded-3" style="border-left: 5px solid #6c757d;">
-                        <h6 class="text-uppercase text-muted fw-bold small mb-2">Background Context</h6>
+                        <h6 class="text-uppercase text-muted fw-bold small mb-2">{{ question.context.context_title }}</h6>
                         <div class="lead" style="font-size: 1.05rem; line-height: 1.7;">
-                            {{ question.context|linebreaks }}
+                            {{ question.context.context|linebreaks }}
                         </div>
                     </div>
 
@@ -83,7 +83,15 @@
                                 <p class="text-muted italic">No choices provided.</p>
                             {% endfor %}
                         </div>
-                    </div> </div>
+                    </div>
+					
+					
+					<h5 class="mt-4">Question difficulty: {{ question.question_difficulty }}</h5>
+					<h5 class="mt-4">Question discrimination: {{ question.question_discrimination }}</h5>
+					<h5 class="mt-4">Question facility: {{ question.question_facility }}</h5>
+					
+					</div>
+					
             </div>
 			
 			

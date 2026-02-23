@@ -7,7 +7,7 @@ class ContextForm(forms.ModelForm):
 	
 	class Meta:
 		model = Context
-		fields = ['context_id', 'context']
+		fields = ['context_id', 'context_title', 'context']
 	#class Meta	
 	
 #class ContextForm
@@ -18,7 +18,7 @@ class QuestionForm(forms.ModelForm):
 	
 	class Meta:
 		model = Question
-		fields = ['q_id', 'question', 'target_level']
+		fields = ['q_id', 'question', 'target_level', 'question_difficulty', 'question_discrimination', 'question_facility']
 	#class Meta	
 	
 #class QuestionForm

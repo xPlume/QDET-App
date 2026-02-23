@@ -6,7 +6,7 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 
 from directory.forms import CSVuploadForm
-from directory.models import Question, Answer
+from directory.models import Context, Question, Answer
 
 
 @login_required
@@ -36,19 +36,23 @@ def upload_csv(request):
 						
 						# 2. Extract Data
 						context_id = row[0]
-						context_text = row[1]
-						q_id = row[2]
-						question_text = row[3]
-						target_level = row[4]
+						context_title = row[1]
+						context_text = row[2]
+						target_level = row[3]
+						q_id = row[4]
+						question_text = row[5]
+						question_difficulty = row[7]
+						question_discrimination = row[8]
+						question_facility = row[9]
 						
 						# Options are columns 5, 6, 7, 8
-						options_data = [row[5], row[6], row[7], row[8]]
+						options_data = [row[10], row[11], row[12], row[13]]
 						
 						# Correct answer index is column 9 (e.g., "0", "2")
 						try:
-							correct_index = int(row[9])
+							correct_index = int(row[6])
 						except ValueError:
-							raise ValueError(f"Row {row_index + 1}: Correct answer '{row[9]}' is not a number.")
+							raise ValueError(f"Row {row_index + 1}: Correct answer '{row[6]}' is not a number.")
 						#except
 						
 						# Validate index range (must be 0, 1, 2, or 3)
@@ -56,13 +60,25 @@ def upload_csv(request):
 							raise ValueError(f"Row {row_index + 1}: Correct answer index {correct_index} is out of bounds (must be 0-3).")
 						#if
 						
+						# Creating or referencing the context
+						context_obj, created = Context.objects.get_or_create(
+							context_id=int(context_id),
+							uploader=request.user,
+							defaults={
+								'context': context_text,
+								'context_title': context_title,
+							}
+						)
+						
 						# 3. Create Question
 						question_obj = Question.objects.create(
-							context_id=int(context_id),
-							context=context_text,
 							q_id=q_id,
 							question=question_text,
 							target_level=target_level,
+							question_difficulty=question_difficulty,
+							question_discrimination=question_discrimination,
+							question_facility=question_facility,
+							context = context_obj,
 							uploader=request.user
 						)
 						

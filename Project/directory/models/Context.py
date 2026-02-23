@@ -7,6 +7,7 @@ class Context(models.Model):
 	
 	context_id = models.IntegerField(blank=False, null=False)
 	context = models.TextField(null=False, default=None)
+	context_title = models.TextField(null=False, default=None)
 	
 	uploader = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
 	
