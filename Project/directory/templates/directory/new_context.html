@@ -42,12 +42,12 @@
 		
 		<div class="container">
 			
-			<legend class="mb-2">Select an existing context or create a new one</legend>
+			<legend class="mb-2">Select an existing context</legend>
 			
 			
 			<div class="mb-4">
-				<label for="exampleSelect1" class="form-label mt-4">Example select</label>
-				<select name="context_selection" class="form-select" id="context_id">
+				<label for="exampleSelect1" class="form-label"></label>
+				<select name="context_selection" class="form-select form-select-lg" id="context_id">
 					<option value="">----------------</option>
 					{% for context in existing_context %}
 						<option value="{{ context.id }}">{{ context.context_id }}</option>
@@ -57,13 +57,16 @@
 			
 			<!-- Submit button -->
 			<div class="container mb-5">
-				<button name="selected" type="submit" class="btn btn-lg btn-outline-primary mt-5">Save</button>
+				<button name="selected" type="submit" class="btn btn-lg btn-outline-primary">Save</button>
 			</div>
 			
 			
-			
+			<hr>
 			
 			<!-- Basic Info -->
+			<legend class="mb-2">Create a new context</legend>
+			
+			
 			<div class="row">
 				
 				<!-- Context ID -->
@@ -87,7 +90,7 @@
 			
 			<!-- Submit button -->
 			<div class="container mb-5">
-				<button name="create_new" type="submit" class="btn btn-lg btn-outline-primary mt-5">Save</button>
+				<button name="create_new" type="submit" class="btn btn-lg btn-outline-primary">Save</button>
 			</div>
 			
 		</div>

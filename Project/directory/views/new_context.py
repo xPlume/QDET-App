@@ -12,7 +12,9 @@ def new_context(request):
 	
 	user = request.user
 	
-	existing_context = Context.objects.filter(uploader=user)
+	existing_context = Context.objects.filter(
+		uploader=user
+	).order_by('-id')
 	
 	
 	if request.method == 'POST':
@@ -40,14 +42,16 @@ def new_context(request):
 		
 		# If user picked an existing context
 		elif 'selected' in request.POST:
-			try: 
-				selected_django_id = request.POST.get('context_selection')
+			selected_django_id = request.POST.get('context_selection')
+			
+			if selected_django_id and selected_django_id.strip() != "": 
 				messages.success(request, "The context has been selected.", extra_tags="success")
 				return redirect('new_question', context_id=selected_django_id)
-			except: 
+			#if 
+			else: 
 				messages.error(request, "You must choose a valid context.", extra_tags="danger")
 				return redirect('new_context')
-			#except
+			#else
 		#elif
 		
 		

@@ -1,7 +1,6 @@
 from django.db import models
 
 from django.conf import settings
-from login.models import ActiveUserManager
 User = settings.AUTH_USER_MODEL
 
 from directory.models import Context
@@ -15,8 +14,6 @@ class Question(models.Model):
 	uploader = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
 	context = models.ForeignKey(Context, null=False, on_delete=models.CASCADE)
 	
-	objects = ActiveUserManager(user_field='uploader')
-	all_objects = models.Manager()
 	
 	def __str__(self):
 		return f"{self.id}"

@@ -119,6 +119,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
+
 # Redirect to home after login
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
