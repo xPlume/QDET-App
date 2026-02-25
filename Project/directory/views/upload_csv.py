@@ -1,5 +1,6 @@
 import csv
 import io
+from decimal import Decimal, InvalidOperation
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import transaction
@@ -7,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 from directory.forms import CSVuploadForm
 from directory.models import Context, Question, Answer
+from directory.utils import safe_decimal
 
 
 @login_required
@@ -41,9 +43,9 @@ def upload_csv(request):
 						target_level = row[3]
 						q_id = row[4]
 						question_text = row[5]
-						question_difficulty = row[7]
-						question_discrimination = row[8]
-						question_facility = row[9]
+						question_difficulty = safe_decimal(row[7], places=2)
+						question_discrimination = safe_decimal(row[8], places=3)
+						question_facility = safe_decimal(row[9], places=3)
 						
 						# Options are columns 5, 6, 7, 8
 						options_data = [row[10], row[11], row[12], row[13]]

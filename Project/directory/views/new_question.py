@@ -39,7 +39,7 @@ def new_question(request, context_id):
 			if not any(instance.is_correct for instance in answer_formset_instance):
 				messages.error(request, "You must mark at least one answer as correct.", extra_tags="danger")
 				
-				return redirect('new_question')
+				return redirect('new_question', context_id)
 			#if 
 			
 			
@@ -61,7 +61,7 @@ def new_question(request, context_id):
 		
 		else:
 			messages.error(request, new_question_form.errors, extra_tags="danger")
-			return redirect('new_question')
+			return redirect('new_question', context_id)
 		#else
 		
 	#if
