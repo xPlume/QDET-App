@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from directory.models import Context, Question, Answer
-from directory.forms import ContextForm, QuestionForm
+from directory.models import Context, Question, Answer, TopicNames, Topics
+from directory.forms import ContextForm, QuestionForm, TopicsForm
 from directory.decorators import question_creator
 
 from django.forms import modelformset_factory
@@ -17,8 +17,14 @@ def update_question(request, question_id):
 	
 	question = get_object_or_404(Question, id=question_id)
 	
+	corresponding_topic = Topics.objects.filter(question=question.id).first()
+	
 	answers = Answer.objects.filter(
 		question_linked = question
+	)
+	
+	existing_topics = TopicNames.objects.filter(
+		user=user,
 	)
 	
 	
@@ -29,8 +35,9 @@ def update_question(request, question_id):
 		update_context = ContextForm(request.POST, instance=question.context)
 		update_question = QuestionForm(request.POST, instance=question)
 		answer_formset = AnswerFormSet(request.POST, queryset=answers)
+		update_topic = TopicsForm(request.POST, instance=corresponding_topic)
 		
-		if update_context.is_valid() and update_question.is_valid() and answer_formset.is_valid():
+		if update_context.is_valid() and update_question.is_valid() and answer_formset.is_valid() and update_topic.is_valid():
 			
 			# Updating context
 			update_instance = update_context.save(commit=False)
@@ -43,6 +50,22 @@ def update_question(request, question_id):
 			update_instance.uploader = request.user
 			update_instance.context = question.context
 			update_instance.save()
+			
+			
+			# Updating topic
+			update_instance = update_topic.save(commit=False)
+			selected_topic_id = request.POST.get('topic_selection')
+			if selected_topic_id: # If a topic is selected
+				topic_object = get_object_or_404(TopicNames, id=selected_topic_id)
+				update_instance.question = question
+				update_instance.topic_name = topic_object
+				update_instance.save()
+			#
+			else: # Delete the object
+				print("GOT INTO THE DELETE")
+				update_instance.delete()
+			#
+			
 			
 			
 			# Updating answers
@@ -62,7 +85,7 @@ def update_question(request, question_id):
 		#if
 		
 		else:
-			messages.error(request, answer_formset.errors, extra_tags="danger")
+			messages.error(request, update_question.errors, extra_tags="danger")
 			return redirect('update_question', question_id)
 		#else
 		
@@ -73,6 +96,7 @@ def update_question(request, question_id):
 		update_context = ContextForm(instance=question.context)
 		update_question = QuestionForm(instance=question)
 		answer_formset = AnswerFormSet(queryset=answers)
+		update_topic = TopicsForm(instance=corresponding_topic)
 	#else
 	
 	
@@ -83,6 +107,8 @@ def update_question(request, question_id):
 		"update_context": update_context,
 		"update_question": update_question,
 		"answer_formset": answer_formset,
+		"existing_topics": existing_topics,
+		"corresponding_topic": corresponding_topic,
 	}
 	
 	return render(request, template_name, context)

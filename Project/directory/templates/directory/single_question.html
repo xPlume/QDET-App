@@ -86,9 +86,9 @@
                     </div>
 					
 					
-					<h5 class="mt-4">Question difficulty: {{ question.question_difficulty }}</h5>
-					<h5 class="mt-4">Question discrimination: {{ question.question_discrimination }}</h5>
-					<h5 class="mt-4">Question facility: {{ question.question_facility }}</h5>
+					<h5 class="mt-4">Question difficulty: {{ question.question_difficulty|default_if_none:'--' }}</h5>
+					<h5 class="mt-4">Question discrimination: {{ question.question_discrimination|default_if_none:'--' }}</h5>
+					<h5 class="mt-4">Question facility: {{ question.question_facility|default_if_none:'--' }}</h5>
 					
 					</div>
 					

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Context, Question, Answer
+from .models import Context, Question, Answer, TopicNames, Topics
 
 
 class ContextForm(forms.ModelForm):
@@ -40,3 +40,24 @@ class CSVuploadForm(forms.Form):
 	file = forms.FileField(label='Select a .csv file')
 	
 #class
+
+
+class TopicsNamesForm(forms.ModelForm):
+	
+	class Meta:
+		model = TopicNames
+		fields = ['name']
+	#class Meta
+	
+#class
+
+
+class TopicsForm(forms.ModelForm):
+	
+	class Meta:
+		model = Topics
+		fields = []
+	#class Meta
+	
+#class
+

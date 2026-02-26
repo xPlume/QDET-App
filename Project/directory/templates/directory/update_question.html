@@ -45,6 +45,22 @@
 		<div class="container">
 			
 			
+			<!-- Select Topic -->
+			<legend class="">Select a topic (optional)</legend>
+			<div class="mb-5">
+				<label for="exampleSelect1" class="form-label"></label>
+				<select name="topic_selection" class="form-select form-select-lg" id="context_id">
+					<option value="">----------------</option>
+					{% for topic in existing_topics %}
+						<option value="{{ topic.id }}" 
+							{% if topic.id == corresponding_topic.topic_name.id %}selected{% endif %}>
+							{{ topic.name }}
+						</option>
+					{% endfor %}
+				</select>
+			</div>
+			
+			
 			<!-- Updating the Context -->
 			<legend class="mb-2">Updating the context {{ question.context.context_id }}</legend>
 			<div class="row">
@@ -109,36 +125,36 @@
 				
 				<!-- Question difficulty -->
 				<div class="col-12 col-sm-4 form-floating mb-3">
-					<input required
+					<input
 						class="form-control"
 						type="text"
 						placeholder="Question ID"
 						name="question_difficulty"
-						value="{{ question.question_difficulty }}"
+						value="{{ question.question_difficulty|default_if_none:'' }}"
 						>
 					<label class="ms-3" for="floatingInput">Question difficulty</label>
 				</div>
 				
 				<!-- Question discrimination -->
 				<div class="col-12 col-sm-4 form-floating mb-3">
-					<input required
+					<input
 						class="form-control"
 						type="text"
 						placeholder="Question ID"
 						name="question_discrimination"
-						value="{{ question.question_discrimination }}"
+						value="{{ question.question_discrimination|default_if_none:'' }}"
 						>
 					<label class="ms-3" for="floatingInput">Question discrimination</label>
 				</div>
 				
 				<!-- Question facility -->
 				<div class="col-12 col-sm-4 form-floating mb-3">
-					<input required
+					<input
 						class="form-control"
 						type="text"
 						placeholder="Question ID"
 						name="question_facility"
-						value="{{ question.question_facility }}"
+						value="{{ question.question_facility|default_if_none:'' }}"
 						>
 					<label class="ms-3" for="floatingInput">Question facility</label>
 				</div>

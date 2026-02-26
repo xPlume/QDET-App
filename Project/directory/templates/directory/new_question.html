@@ -64,6 +64,21 @@
 		
 		<div class="container">
 			
+			
+			<!-- Select Topic -->
+			<legend class="">Select a topic (optional)</legend>
+			<div class="mb-5">
+				<label for="exampleSelect1" class="form-label"></label>
+				<select name="topic_selection" class="form-select form-select-lg" id="context_id">
+					<option value="">----------------</option>
+					{% for topic in existing_topics %}
+						<option value="{{ topic.id }}">{{ topic.name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			
+			
+			
 			<legend class="mb-2">Creating a new question</legend>
 			
 			
