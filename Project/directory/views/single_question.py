@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 from directory.models import Context, Question, Answer
 from directory.decorators import question_creator
-
+from directory.data_preparation import data_preparation
 
 @login_required
 @question_creator
@@ -17,6 +17,12 @@ def single_question(request, question_id):
 	answers = Answer.objects.filter(
 		question_linked = question
 	)
+	
+	
+	# Evaluting the question
+	if request.method == 'POST':
+		data_preparation(question, answers)
+	#if
 	
 	
 	template_name = "directory/single_question.html"
