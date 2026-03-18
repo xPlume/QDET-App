@@ -7,75 +7,95 @@ import os
 import pandas as pd
 import random
 
+from tabulate import tabulate
+
 
 def data_preparation(question, answers):
-    # This is a custom method built to provide the data in the format expected by the models defined in text2props.
-
-    #raw_df = pd.read_csv(os.path.join(DATA_PATH, 'reading_comprehension_questions.csv'))
-    #print(f"[INFO] Length of the original dataset: {len(raw_df)}")
-
-    # This is a dictionary that contains the "true" latent traits for the questions.
-    wrongness_dictionary = {
+	# 1. Calculate Wrongness (using float as requested previously)
+	WRONGNESS = 'wrongness' # Assuming this is your constant name
+	wrongness_dictionary = {
 		WRONGNESS: {
 			question.q_id: 1 - question.question_facility
 		}
 	}
-    print(f"[INFO] Number of questions in the wrongness dictionary: {len(wrongness_dictionary[WRONGNESS])}")
+	
+	
+	pivot = 0
+	for answer in answers:
+		if (answer.is_correct == True):
+			correct_answer_number = pivot
+		#if
+		pivot += 1
+	#for
+	
+	
+	# 2. Prepare the Question DataFrame (single-row DF)
+	# Map your object attributes to the required constants
 
-    """
-    def prepare_questions_df(input_df: pd.DataFrame):
-        #This is a method that maps from the format of the raw_df to the format needed by the library.
-        output_df = pd.DataFrame(columns=QUESTION_DF_COLS)
-        # Unique ID of the question
-        output_df[Q_ID] = input_df['q_id']
-        # The full text needed as input is text of the reading passage + text of the question
-        output_df[Q_TEXT] = input_df.apply(lambda r: f"Context:\n{r['text']}\n\nQuestion:\n{r['question']}", axis=1)
-        # The texts of the correct answer options(s), as a list of str
-        output_df[CORRECT_TEXTS] = input_df.apply(
-            lambda r: [ [r['option_0'], r['option_1'], r['option_2'], r['option_3']][r['correct_answer']] ],
-            axis=1
-        )
-        # The texts of the wrong answer option(s), as a list of str
-        output_df[WRONG_TEXTS] = input_df.apply(
-            lambda r: [
-                x for idx, x in enumerate([r['option_0'], r['option_1'], r['option_2'], r['option_3']])
-                if idx != r['correct_answer']
-            ],
-            axis=1
-        )
-        return output_df
+	# Logic for correct/wrong texts
+	options = [answers[0].answer, answers[1].answer, answers[2].answer, answers[3].answer]
+	correct_texts = [options[correct_answer_number]]
+	wrong_texts = [text for idx, text in enumerate(options) if idx != correct_answer_number]
 
-    # Train/test split
-    
-    list_context_ids = list(raw_df['context_id'].unique())
-    random.shuffle(list_context_ids)
-    n_train_context_ids = int(len(list_context_ids) * 0.8)
-    print(f"[INFO] Number training contexts: {n_train_context_ids}")
-    train_df = raw_df[raw_df['context_id'].isin(list_context_ids[:n_train_context_ids])]
-    print(f"[INFO] Length (n questions) of train_df: {len(train_df)}")
-    test_df = raw_df[raw_df['context_id'].isin(list_context_ids[n_train_context_ids:])]
-    print(f"[INFO] Length (n questions) of test_df: {len(test_df)}")
+	data = {
+		Q_ID: [question.q_id],
+		Q_TEXT: [f"Context:\n{question.context.context}\n\nQuestion:\n{question.question}"],
+		CORRECT_TEXTS: [correct_texts],
+		WRONG_TEXTS: [wrong_texts]
+	}
 
-    # Convert DFs to the right format
-    train_df = prepare_questions_df(train_df)
-    print(f"[INFO] Length (n questions) of  (after conversion to text2props format): {len(train_df)}")
-    test_df = prepare_questions_df(test_df)
-    print(f"[INFO] Length (n questions) of test_df (after conversion to text2props format): {len(test_df)}")
+	# Create the DataFrame for this single question
+	output_df = pd.DataFrame(data, columns=QUESTION_DF_COLS)
 
-    return wrongness_dictionary, train_df, test_df
-    """
-    return wrongness_dictionary
+	# 3. Train/Test Split Logic
+	# Since you are processing ONE question at a time, we decide if it belongs to train or test.
+	# If you need to simulate a split, we can use a simple random check.
+	if random.random() < 0.8:
+		train_df = output_df
+		test_df = pd.DataFrame(columns=QUESTION_DF_COLS)
+	else:
+		train_df = pd.DataFrame(columns=QUESTION_DF_COLS)
+		test_df = output_df
+
+	return wrongness_dictionary, train_df, test_df
 
 
 def runner(question, answers):
 	
-	known_latent_traits = data_preparation(question, answers)
+	
+	known_latent_traits, df_train, df_test = data_preparation(question, answers)
 	print("")
 	print("")
 	print("")
 	print("")
 	print("Known latent traits")
 	print(known_latent_traits)
+	print("")
+	print("")
+	# 1. Don't truncate column width (allows full text to show)
+	pd.set_option('display.max_colwidth', None)
+
+	# 2. Show all columns (don't use '...' in the middle of columns)
+	pd.set_option('display.max_columns', None)
+	
+	# 3. Show all rows (don't use '...' in the middle of the dataset)
+	pd.set_option('display.max_rows', None)
+	
+	# 4. Don't wrap the table to the next line (prevents breaking the table)
+	pd.set_option('display.expand_frame_repr', False)
+	
+	print("--- TRAIN_DF CONTENT ---")
+	#print(df_train)
+	print(tabulate(df_train, headers='keys', tablefmt='grid'))
+	
+	print("")
+	print("")
+	print("")
+	
+	print("\n--- TEST_DF CONTENT ---")
+	#print(df_test)
+	print(tabulate(df_test, headers='keys', tablefmt='grid'))
+	
 	
 	"""
 	# Prepare data. This is custom for the given .csv()

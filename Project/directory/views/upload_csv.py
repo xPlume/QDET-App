@@ -1,21 +1,33 @@
 import csv
 import io
 from decimal import Decimal, InvalidOperation
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 
 from directory.forms import CSVuploadForm
-from directory.models import Context, Question, Answer
+from directory.models import Context, Question, Answer, TopicNames, Topics
+from directory.forms import TopicsForm
 from directory.utils import safe_decimal
 
 
 @login_required
 def upload_csv(request):
+	
+	user = request.user
+	existing_topics = TopicNames.objects.filter(
+		user=user,
+	)
+	
 	if request.method == 'POST':
+		
+		
 		form = CSVuploadForm(request.POST, request.FILES)
-		if form.is_valid():
+		
+		new_topic_form = TopicsForm(request.POST)
+		
+		if form.is_valid() and new_topic_form.is_valid():
 			csv_file = request.FILES['file']
 			
 			# Use utf-8-sig to handle potential BOM from Excel
@@ -25,6 +37,14 @@ def upload_csv(request):
 			
 			# Skip header if exists
 			next(reader, None)
+			
+			
+			# Handling topics
+			selected_topic_id = request.POST.get('topic_selection')
+			if selected_topic_id: # If a topic is selected
+				topic_object = get_object_or_404(TopicNames, id=selected_topic_id)
+			#
+			
 			
 			try:
 				with transaction.atomic():
@@ -84,6 +104,15 @@ def upload_csv(request):
 							uploader=request.user
 						)
 						
+						
+						
+						# Handling topics
+						topic_obj = Topics.objects.create(
+							topic_name = topic_object,
+							question = question_obj,
+						)
+						
+						
 						# 4. Create Answers
 						# We use enumerate to get the current index (0, 1, 2, 3)
 						for index, opt_text in enumerate(options_data):
@@ -128,6 +157,7 @@ def upload_csv(request):
 	template_name = "directory/upload_csv.html"
 	context = {
 		"form": form,
+		"existing_topics": existing_topics,
 	}
 	
 	return render(request, template_name, context)

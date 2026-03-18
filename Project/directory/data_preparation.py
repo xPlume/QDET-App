@@ -5,6 +5,7 @@ from text2props.example_model_1 import runner
 # format before sending it to the ML model
 def data_preparation(question, answers):
 	
+	"""
 	for answer in answers:
 		pivot = 0
 		if (answer.is_correct == True):
@@ -30,13 +31,12 @@ def data_preparation(question, answers):
 		'option_2': [answers[2].answer],
 		'option_3': [answers[3].answer],
 	}
-	
+	"""
 	
 	# Call the ML model
 	# ML_Result = [Name_of_the_ML_model_function](new_row_dict)
 	
 	# Save the result in the database
-	print("IT DIDN'T CRASH")
 	
 	
 	# Running the model
