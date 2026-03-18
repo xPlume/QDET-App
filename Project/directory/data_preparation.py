@@ -1,4 +1,6 @@
 
+from text2props.example_model_1 import runner
+
 # Function that prepares the data in the correct
 # format before sending it to the ML model
 def data_preparation(question, answers):
@@ -36,5 +38,8 @@ def data_preparation(question, answers):
 	# Save the result in the database
 	print("IT DIDN'T CRASH")
 	
+	
+	# Running the model
+	runner(question, answers)
 	
 #def
