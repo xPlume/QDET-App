@@ -1,8 +1,0 @@
-build/
-data/
-dist/
-.idea/
-*.egg-info/
-output*
-__pycache__/
-

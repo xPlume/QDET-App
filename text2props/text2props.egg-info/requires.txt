@@ -1,0 +1,8 @@
+gensim
+nltk
+numpy
+pandas
+pyirt
+scikit-learn
+scipy
+textstat

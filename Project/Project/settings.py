@@ -1,8 +1,17 @@
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Referencing the Text2Props folder
+"""
+TEXT2PROPS_PATH = os.path.join(BASE_DIR.parent, 'text2props')
+if TEXT2PROPS_PATH not in sys.path:
+	sys.path.append(TEXT2PROPS_PATH)
+#if
+"""
 
 
 # Quick-start development settings - unsuitable for production
