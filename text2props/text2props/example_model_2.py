@@ -18,10 +18,10 @@ def data_preparation(questions_queryset):
     print(f"[INFO] Length of the original dataset: {len(questions_list)}")
 
     # 2. Build the wrongness dictionary
-    # Assuming 'facility' is a field on your Question model
+    # Note: WORKS FOR QUESTION_FACILITY ONLY
     wrongness_dictionary = {
         WRONGNESS: {
-            q.id: 1 - q.question_facility
+            q.id: 1 - float(q.question_facility)
             for q in questions_list
         }
     }
@@ -74,6 +74,7 @@ def runner(questions_info):
 	
 	known_latent_traits, df_train, df_test = data_preparation(questions_info)
 	
+	"""
 	print("")
 	print("")
 	print("")
@@ -108,7 +109,7 @@ def runner(questions_info):
 	print(df_test)
 	"""
 	# Prepare data. This is custom for the given .csv()
-	known_latent_traits, df_train, df_test = data_preparation(question, answers)
+	known_latent_traits, df_train, df_test = data_preparation(questions_info)
 
 	# Define the "calibrator".
 	#   This is the object that looks at the students responses and measures the "true" values for the latent traits.
@@ -135,7 +136,7 @@ def runner(questions_info):
 	# evaluate model and print results
 	results = text2props_model.compute_error_metrics_latent_traits_estimation(df_test)
 	print(results)
-	"""
+	
 
 
 # --- --- COLUMN REQUIREMENTS and DATA FORMAT --- ---
