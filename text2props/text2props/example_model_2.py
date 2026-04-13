@@ -10,61 +10,70 @@ import random
 from tabulate import tabulate
 
 
-def data_preparation(question, answers):
-	# 1. Calculate Wrongness
-	WRONGNESS = 'wrongness' # Assuming this is your constant name
-	wrongness_dictionary = {
-		WRONGNESS: {
-			question.q_id: 1 - question.question_facility
-		}
-	}
+def data_preparation(questions_queryset):
+    
+	
+    # 1. Convert QuerySet to a list to allow shuffling and easy indexing
+    questions_list = list(questions_queryset)
+    print(f"[INFO] Length of the original dataset: {len(questions_list)}")
+
+    # 2. Build the wrongness dictionary
+    # Assuming 'facility' is a field on your Question model
+    wrongness_dictionary = {
+        WRONGNESS: {
+            q.id: 1 - q.question_facility
+            for q in questions_list
+        }
+    }
+    print(f"[INFO] Number of questions in the wrongness dictionary: {len(wrongness_dictionary[WRONGNESS])}")
+
+    def prepare_questions_list(qs_subset):
+        """ Maps Django objects to the format needed by text2props. """
+        data = []
+        for q in qs_subset:
+            # Get all answers for this question (cached by prefetch)
+            all_answers = list(q.answers.all())
+            
+            correct_texts = [a.answer for a in all_answers if a.is_correct]
+            wrong_texts = [a.answer for a in all_answers if not a.is_correct]
+
+            data.append({
+                Q_ID: q.id,
+                # Accessing q.context.text (cached by select_related)
+                Q_TEXT: f"Context:\n{q.context.context}\n\nQuestion:\n{q.question}",
+                CORRECT_TEXTS: correct_texts,
+                WRONG_TEXTS: wrong_texts
+            })
+        
+        return pd.DataFrame(data, columns=QUESTION_DF_COLS)
+
+    # 3. Train/test split based on Context ID
+    # We group by context_id to ensure a passage doesn't leak from train to test
+    context_ids = list(set(q.context_id for q in questions_list))
+    random.shuffle(context_ids)
+    
+    n_train = int(len(context_ids) * 0.8)
+    train_context_ids = set(context_ids[:n_train])
+
+    train_subset = [q for q in questions_list if q.context_id in train_context_ids]
+    test_subset = [q for q in questions_list if q.context_id not in train_context_ids]
+
+    print(f"[INFO] Number training contexts: {n_train}")
+    print(f"[INFO] Length (n questions) of train_df: {len(train_subset)}")
+    print(f"[INFO] Length (n questions) of test_df: {len(test_subset)}")
+
+    # 4. Convert to DataFrames
+    train_df = prepare_questions_list(train_subset)
+    test_df = prepare_questions_list(test_subset)
+
+    return wrongness_dictionary, train_df, test_df
+
+
+def runner(questions_info):
 	
 	
-	pivot = 0
-	for answer in answers:
-		if (answer.is_correct == True):
-			correct_answer_number = pivot
-		#if
-		pivot += 1
-	#for
+	known_latent_traits, df_train, df_test = data_preparation(questions_info)
 	
-	
-	# 2. Prepare the Question DataFrame (single-row DF)
-	# Map your object attributes to the required constants
-
-	# Logic for correct/wrong texts
-	options = [answers[0].answer, answers[1].answer, answers[2].answer, answers[3].answer]
-	correct_texts = [options[correct_answer_number]]
-	wrong_texts = [text for idx, text in enumerate(options) if idx != correct_answer_number]
-
-	data = {
-		Q_ID: [question.q_id],
-		Q_TEXT: [f"Context:\n{question.context.context}\n\nQuestion:\n{question.question}"],
-		CORRECT_TEXTS: [correct_texts],
-		WRONG_TEXTS: [wrong_texts]
-	}
-
-	# Create the DataFrame for this single question
-	output_df = pd.DataFrame(data, columns=QUESTION_DF_COLS)
-
-	# 3. Train/Test Split Logic
-	# Since you are processing ONE question at a time, we decide if it belongs to train or test.
-	# If you need to simulate a split, we can use a simple random check.
-	if random.random() < 0.8:
-		train_df = output_df
-		test_df = pd.DataFrame(columns=QUESTION_DF_COLS)
-	else:
-		train_df = pd.DataFrame(columns=QUESTION_DF_COLS)
-		test_df = output_df
-
-	return wrongness_dictionary, train_df, test_df
-
-
-def runner(question, answers):
-	
-	
-	known_latent_traits, df_train, df_test = data_preparation(question, answers)
-	"""
 	print("")
 	print("")
 	print("")
@@ -126,7 +135,7 @@ def runner(question, answers):
 	# evaluate model and print results
 	results = text2props_model.compute_error_metrics_latent_traits_estimation(df_test)
 	print(results)
-	
+	"""
 
 
 # --- --- COLUMN REQUIREMENTS and DATA FORMAT --- ---

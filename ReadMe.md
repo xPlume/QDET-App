@@ -45,6 +45,7 @@ The QDET App is meant to be a web application designed to perform automated qual
 Make sure you have the following installed on your system:
 
 - **Python** (>= 3.10 recommended)
+- ** gcc compiler** (>= 13.3.0 recommended)
 - **pip** (Python package manager)
 - **virtualenv** (optional but recommended)
 - **Git**
@@ -53,6 +54,7 @@ You can verify your Python and pip installation with:
 
 ```bash
 python --version
+gcc --version
 pip --version
 ```
 
