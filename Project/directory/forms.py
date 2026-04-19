@@ -42,6 +42,14 @@ class CSVuploadForm(forms.Form):
 #class
 
 
+# Requesting info from the user to save the
+# trained model as a pickle file in the DB
+class TrainModelForm(forms.Form):
+	title = forms.CharField(max_length=255)
+	public = forms.BooleanField(required=True)
+#class
+
+
 class TopicsNamesForm(forms.ModelForm):
 	
 	class Meta:
@@ -60,4 +68,7 @@ class TopicsForm(forms.ModelForm):
 	#class Meta
 	
 #class
+
+
+
 
