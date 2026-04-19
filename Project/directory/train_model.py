@@ -16,23 +16,45 @@ from directory.models import TrainedModel
 
 
 
-# Taking all the questions, setting the proper format, and sending them all into the Training.
-def data_preparation(questions_queryset):
+# Taking all the questions and setting the proper format for the Train
+def data_preparation(questions_queryset, object_info):
     
 	
 	# 1. Convert QuerySet to a list to allow shuffling and easy indexing
 	questions_list = list(questions_queryset)
-	#print(f"[INFO] Length of the original dataset: {len(questions_list)}")
 	
 	# 2. Build the wrongness dictionary
-	# Note: WORKS FOR QUESTION_FACILITY ONLY
-	wrongness_dictionary = {
-		WRONGNESS: {
-			q.id: 1 - float(q.question_facility)
-			for q in questions_list
+	
+	"""
+	Parameters: 
+	1: Question Difficulty
+	2: Question Discrimination
+	3: Question Facility
+	"""
+	
+	if object_info.param_type== '1': # Difficulty
+		wrongness_dictionary = {
+			WRONGNESS: {
+				q.id: 1 - float(q.question_difficulty)
+				for q in questions_list
+			}
 		}
-	}
-	#print(f"[INFO] Number of questions in the wrongness dictionary: {len(wrongness_dictionary[WRONGNESS])}")
+	elif object_info.param_type== '2': # Discrimination
+		wrongness_dictionary = {
+			WRONGNESS: {
+				q.id: 1 - float(q.question_discrimination)
+				for q in questions_list
+			}
+		}
+	elif object_info.param_type== '3': # Facility
+		wrongness_dictionary = {
+			WRONGNESS: {
+				q.id: 1 - float(q.question_facility)
+				for q in questions_list
+			}
+		}
+	#if
+	
 	
 	def prepare_questions_list(qs_subset):
 		""" Maps Django objects to the format needed by text2props. """
@@ -43,7 +65,7 @@ def data_preparation(questions_queryset):
 			
 			correct_texts = [a.answer for a in all_answers if a.is_correct]
 			wrong_texts = [a.answer for a in all_answers if not a.is_correct]
-
+			
 			data.append({
 				Q_ID: q.id,
 				# Accessing q.context.text (cached by select_related)
@@ -61,11 +83,10 @@ def data_preparation(questions_queryset):
 	# We no longer split by context_id; we pass the entire questions_list
 	train_df = prepare_questions_list(questions_list)
 
-	# Returning None or an empty DataFrame for the third value to avoid breaking 
-	# unpacking logic if the calling code expects three returns.
+	
 	return wrongness_dictionary, train_df
 	
-# def
+#def
 
 
 
@@ -106,7 +127,7 @@ def train_model(questions_info, object_info):
 	
 	# Preparing the data
 	# All questions are send as Training
-	known_latent_traits, df_train = data_preparation(questions_info)
+	known_latent_traits, df_train = data_preparation(questions_info, object_info)
 	
 	
 	# Define the "calibrator".

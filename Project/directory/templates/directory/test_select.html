@@ -16,12 +16,12 @@
 	<div class="py-5 bg-dark hero-header mb-5">
 		<img src="{% static 'img/bg-hero.webp' %}" alt="Hero background" fetchpriority="high">
 		<div class="container hero-content text-center my-2 pt-5 pb-4">
-			<h1 class="display-3 text-white mb-3 animated fadeInDown roboto-font">Train a model</h1>
+			<h1 class="display-3 text-white mb-3 animated fadeInDown roboto-font">Test your questions</h1>
 			<nav aria-label="breadcrumb">
 			<ol class="breadcrumb justify-content-center">
 				<li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
 				<li class="breadcrumb-item"><a href="{% url 'user_questions' %}">MCQs</a></li>
-				<li class="breadcrumb-item text-white active" aria-current="page">Model Training</li>
+				<li class="breadcrumb-item text-white active" aria-current="page">Testing questions</li>
 			</ol>
 			</nav>
 		</div>
@@ -35,60 +35,32 @@
 {% block content %}
 	
 	
-	
-	
-	
 	<!-- Form start -->
 	<form method="POST" enctype="multipart/form-data">
 	{% csrf_token %}
-		
+	
 		<div class="container">
 			
-			<h4 class="">Select a parameter</h4>
+			<h4 class="">Select a trained model</h4>
 			
 			<!-- Select parameter-->
 			<div class="mb-5">
 				<label for="exampleSelect1" class="form-label"></label>
 				<select name="param_selection" class="form-select form-select-lg" id="param_id">
 					<option value="">----------------</option>
-					<option value="1">Question Difficulty</option>
-					<option value="2">Question Discrimination</option>
-					<option value="3">Question Facility</option>
+					{% for model in existing_models %}
+						<option value="{{ model.id }}">{{ model.title }}</option>
+					{% endfor %}
 				</select>
 			</div>
 			
 			
 			
-			<!-- Title -->
-			<div class="col-12 col-sm-6 form-floating mb-3">
-				<input required
-					class="form-control"
-					type="text" 
-					placeholder="Model Title"
-					name="title" 
-					id="title_id" 
-					value="{{ form.title.value|default:'' }}" 
-				>
-				<label class="ms-3" for="title_id">Model Title</label>
-			</div>
 			
 			
-			<!-- Make public switch -->
-			<div class="form-check form-switch">
-				<label for="public_id">Make the model public?</label>
-				<input type="checkbox" 
-					class=form-check-input
-					name="public" 
-					id="public_id" 
-					{% if form.public.value %}checked{% endif %}
-				>
-			</div>
-			
-			
-			
-			<!-- Train model button-->
+			<!-- Test questions button-->
 			<div class="text-center my-3">
-				<button type="submit" class="btn btn-lg btn-outline-success">Train the model</button>
+				<button type="submit" class="btn btn-lg btn-outline-success">Test the questions</button>
 			</div>
 			
 		</div>

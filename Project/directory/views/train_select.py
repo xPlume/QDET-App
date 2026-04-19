@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.core.paginator import Paginator
 from django.db.models import Prefetch
 
 from django.contrib.auth.decorators import login_required
@@ -26,16 +25,35 @@ def train_select(request):
 			object_info = SimpleNamespace(
 				uploader = user,
 				title = form.cleaned_data['title'],
-				public = form.cleaned_data['public']
+				public = form.cleaned_data['public'],
+				param_type = form.cleaned_data['param_selection'],
 			)
 		#if
 		
+		"""
+		Parameters: 
+		1: Question Difficulty
+		2: Question Discrimination
+		3: Question Facility
+		"""
 		
 		# Fetching questions with their context and all related answers
-		questions_info = Question.objects.filter(
-			uploader=user,
-			question_facility__isnull=False
-		).select_related('context').prefetch_related('answers').order_by('-id')
+		if object_info.param_type== '1': # Difficulty
+			questions_info = Question.objects.filter(
+				uploader=user,
+				question_difficulty__isnull=False,
+			).select_related('context').prefetch_related('answers').order_by('-id')
+		elif object_info.param_type== '2': # Discrimination
+			questions_info = Question.objects.filter(
+				uploader=user,
+				question_discrimination__isnull=False,
+			).select_related('context').prefetch_related('answers').order_by('-id')
+		elif object_info.param_type== '3': # Facility
+			questions_info = Question.objects.filter(
+				uploader=user,
+				question_facility__isnull=False,
+			).select_related('context').prefetch_related('answers').order_by('-id')
+		#if
 		
 		
 		"""
@@ -52,6 +70,9 @@ def train_select(request):
 		"""
 		
 		train_model(questions_info, object_info)
+		
+		# return redirect....
+		
 	#if
 	
 	
