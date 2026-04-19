@@ -6,8 +6,14 @@ from text2props.text2props.constants import DATA_PATH, WRONGNESS, QUESTION_DF_CO
 import os
 import pandas as pd
 import random
+import pickle
 
 from tabulate import tabulate
+
+
+import io
+from django.core.files.base import ContentFile
+from directory.models import TrainedModel
 
 
 def data_preparation(questions_queryset):
@@ -69,7 +75,40 @@ def data_preparation(questions_queryset):
     return wrongness_dictionary, train_df, test_df
 
 
-def runner(questions_info):
+
+
+def save_trained_model_to_db(text2props_model, model_title, user):
+	# 1. Create an in-memory byte stream
+	buffer = io.BytesIO()
+
+	# 2. Pickle the model into the buffer
+	pickle.dump(text2props_model, buffer)
+
+	# 3. Seek to the start of the buffer so Django can read it
+	buffer.seek(0)
+
+	# 4. Create the Django Model instance
+	new_model_record = TrainedModel(
+		title=model_title,
+		public=False,
+		uploader=user,
+	)
+	
+	# 5. Construct a unique filename using the UUID
+	# We use the instance's pre-generated UUID for the filename
+	filename = f"{new_model_record.id}.pkl"
+
+	# 6. Save the buffer content to the FileField
+	new_model_record.pickle_file.save(filename, ContentFile(buffer.read()), save=True)
+
+	return new_model_record
+#def 
+
+
+
+
+
+def runner(questions_info, user):
 	
 	
 	known_latent_traits, df_train, df_test = data_preparation(questions_info)
@@ -128,7 +167,31 @@ def runner(questions_info):
 
 	# Train the text2props_model
 	text2props_model.train(df_train=df_train)
-
+	
+	"""
+	# Save the trained model as a pickle file in the Media folder
+	save_directory = "media"
+	file_name = "text2props_v2.pkl"
+	full_path = os.path.join(save_directory, file_name)
+	
+	# 2. Ensure the directory exists (prevents an error if the folder is missing)
+	if not os.path.exists(save_directory):
+		os.makedirs(save_directory)
+	
+	# 3. Save the model
+	# 'wb' stands for Write Binary
+	with open(full_path, 'wb') as file:
+		pickle.dump(text2props_model, file)
+	
+	print(f"Model successfully saved to {full_path}")
+	"""
+	
+	
+	# Saving the tained model as a pickle file, with an object in the DB
+	new_model_record = save_trained_model_to_db(text2props_model, "Test", user)
+	
+	
+	
 	# perform predictions
 	predictions = text2props_model.predict(df_test)
 	# print(predictions)  # To have a look at the individual predictions

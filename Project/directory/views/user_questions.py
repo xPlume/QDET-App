@@ -33,7 +33,7 @@ def user_questions(request):
 	if request.method == 'POST':
 		# Fetching questions with their context and all related answers
 		questions_info = Question.objects.filter(
-			uploader=user, 
+			uploader=user,
 			question_facility__isnull=False
 		).select_related('context').prefetch_related('answers').order_by('-id')
 		
@@ -41,6 +41,7 @@ def user_questions(request):
 		for question in questions_info:
 			print(f"Context: {question.context.context_title}")
 			print(f"Question: {question.question}")
+			print(f"User: {question.uploader}")
 			
 			for answer in question.answers.all():
 				print(f" - Answer: {answer.answer}")
@@ -49,7 +50,7 @@ def user_questions(request):
 		"""
 		
 		
-		runner(questions_info)
+		runner(questions_info, user)
 	#if
 	
 	

@@ -50,12 +50,18 @@ def data_preparation(question, answers):
 	# 3. Train/Test Split Logic
 	# Since you are processing ONE question at a time, we decide if it belongs to train or test.
 	# If you need to simulate a split, we can use a simple random check.
+	"""
 	if random.random() < 0.8:
 		train_df = output_df
 		test_df = pd.DataFrame(columns=QUESTION_DF_COLS)
 	else:
 		train_df = pd.DataFrame(columns=QUESTION_DF_COLS)
 		test_df = output_df
+	"""
+	
+	# Since we have only ONE question here, it goes into the test
+	train_df = pd.DataFrame(columns=QUESTION_DF_COLS)
+	test_df = output_df
 
 	return wrongness_dictionary, train_df, test_df
 
