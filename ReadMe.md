@@ -47,7 +47,7 @@ Make sure you have the following installed on your system:
 - **Python** (>= 3.10 recommended)
 - ** gcc compiler** (>= 13.3.0 recommended)
 - **pip** (Python package manager)
-- **virtualenv** (optional but recommended)
+- **virtualenv**
 - **Git**
 
 You can verify your Python and pip installation with:
@@ -71,7 +71,11 @@ git clone https://github.com/xPlume/Cassiopee.git
 cd Cassiopee
 ```
 
-3. (Optional) Create and activate a virtual environment.
+3. Create and activate a virtual environment.
+```
+python -m venv [VENV_NAME]
+source [VENV_NAME]/bin/activate
+```
 
 
 4. Install the Python dependencies:

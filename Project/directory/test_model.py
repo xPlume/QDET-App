@@ -19,7 +19,7 @@ def data_preparation(questions_queryset):
 	
 	
 	def prepare_questions_list(qs_subset):
-		""" Maps Django objects to the format needed by text2props. """
+		# Maps Django objects to the format needed by text2props.
 		data = []
 		for q in qs_subset:
 			all_answers = list(q.answers.all())
@@ -66,11 +66,11 @@ def test_model(questions_info, model_instance):
 	
 	# perform predictions
 	predictions = text2props_model.predict(df_test)
-	#print(predictions)  # To have a look at the individual predictions
+	print(predictions)  # To have a look at the individual predictions
 	
 	# evaluate model and print results
-	results = text2props_model.compute_error_metrics_latent_traits_estimation(df_test)
-	print(results)
+	#results = text2props_model.compute_error_metrics_latent_traits_estimation(df_test)
+	#print(results)
 	
 	
 #def 
