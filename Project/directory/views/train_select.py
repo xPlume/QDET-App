@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Prefetch
+from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
@@ -29,6 +30,11 @@ def train_select(request):
 				param_type = form.cleaned_data['param_selection'],
 			)
 		#if
+		
+		else: 
+			messages.error(request, form.errors, extra_tags="danger")
+			return redirect('train_select')
+		#else
 		
 		"""
 		Parameters: 
@@ -75,10 +81,15 @@ def train_select(request):
 		
 	#if
 	
+	else:
+		form = TrainModelForm()
+	#else
+	
+	
 	
 	template_name = "directory/train_select.html"
 	context = {
-		
+		"form": form,
 	}
 	
 	return render(request, template_name, context)
