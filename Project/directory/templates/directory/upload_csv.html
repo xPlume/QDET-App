@@ -49,7 +49,7 @@
 			<div class="mb-5">
 				<label for="exampleSelect1" class="form-label"></label>
 				<select name="topic_selection" class="form-select form-select-lg" id="context_id">
-					<option value="">----------------</option>
+					<option value="0">----------------</option>
 					{% for topic in existing_topics %}
 						<option value="{{ topic.id }}">{{ topic.name }}</option>
 					{% endfor %}

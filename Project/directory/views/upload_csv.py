@@ -41,7 +41,7 @@ def upload_csv(request):
 			
 			# Handling topics
 			selected_topic_id = request.POST.get('topic_selection')
-			if selected_topic_id: # If a topic is selected
+			if (selected_topic_id != "0"): # If a topic is selected
 				topic_object = get_object_or_404(TopicNames, id=selected_topic_id)
 			#
 			
@@ -107,10 +107,12 @@ def upload_csv(request):
 						
 						
 						# Handling topics
-						topic_obj = Topics.objects.create(
-							topic_name = topic_object,
-							question = question_obj,
-						)
+						if (selected_topic_id != "0"):
+							topic_obj = Topics.objects.create(
+								topic_name = topic_object,
+								question = question_obj,
+							)
+						#if
 						
 						
 						# 4. Create Answers
