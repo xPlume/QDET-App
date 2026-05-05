@@ -27,4 +27,13 @@ class TrainedModel(models.Model):
 		return f"{self.title} - {self.id}"
 	#def
 	
+	
+	# When deleting model reference, delete pickle from media folder 
+	def delete(self, *args, **kwargs):
+		if self.pickle_file and os.path.isfile(self.pickle_file.path):
+			os.remove(self.pickle_file.path)
+		#if
+		super().delete(*args, **kwargs)
+	#def
+	
 #class

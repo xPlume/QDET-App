@@ -38,7 +38,7 @@
 	
 	
 	
-	<!-- Form start -->
+	<!-- Train model Form start -->
 	<form method="POST" enctype="multipart/form-data">
 	{% csrf_token %}
 		
@@ -59,40 +59,73 @@
 			
 			
 			
-			<!-- Title -->
-			<div class="col-12 col-sm-6 form-floating mb-3">
-				<input required
-					class="form-control"
-					type="text" 
-					placeholder="Model Title"
-					name="title" 
-					id="title_id" 
-					value="{{ form.title.value|default:'' }}" 
-				>
-				<label class="ms-3" for="title_id">Model Title</label>
-			</div>
-			
-			
-			<!-- Make public switch -->
-			<div class="form-check form-switch">
-				<label for="public_id">Make the model public?</label>
-				<input type="checkbox" 
-					class=form-check-input
-					name="public" 
-					id="public_id" 
-					{% if form.public.value %}checked{% endif %}
-				>
-			</div>
-			
-			
-			
 			<!-- Train model button-->
 			<div class="text-center my-3">
-				<button type="submit" class="btn btn-lg btn-outline-success">Train the model</button>
+				<button type="submit" name="train_model" class="btn btn-lg btn-outline-primary">Train the model</button>
 			</div>
 			
 		</div>
 	</form>
+	
+	
+	
+	
+	{% if model_results %}
+		
+		<div class="container">
+			
+			<div class="result-card">
+				<h3>Calculation Results:</h3>
+				<p>{{ model_results }}</p>
+			</div>
+			
+			
+			
+			<!-- Save model Form start -->
+			<form method="POST" enctype="multipart/form-data">
+				{% csrf_token %}
+				
+				<!-- Title -->
+				<h4 class="mt-4 mb-2">Save the model</h4>
+				
+				<!-- Title -->
+				<div class="col-12 col-sm-6 form-floating mb-3">
+					<input required
+						class="form-control"
+						type="text" 
+						placeholder="Model Title"
+						name="title" 
+						id="title_id" 
+						value="{{ save_form.title.value|default:'' }}" 
+					>
+					<label class="ms-3" for="title_id">Model Title</label>
+				</div>
+				
+				
+				<!-- Make public switch -->
+				<div class="form-check form-switch">
+					<label for="public_id">Make the model public?</label>
+					<input type="checkbox" 
+						class=form-check-input
+						name="public" 
+						id="public_id" 
+						{% if save_form.public.value %}checked{% endif %}
+					>
+				</div>
+				
+				
+				
+				<!-- Train model button-->
+				<div class="mx-5 my-4">
+					<button type="submit" name="save_model" class="btn btn-lg btn-outline-success">Save the model</button>
+				</div>
+				
+				
+			</form>
+			
+		</div>
+		
+	{% endif %}
 	
 	
 	

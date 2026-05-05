@@ -42,12 +42,8 @@ class CSVuploadForm(forms.Form):
 #class
 
 
-# Requesting info from the user to save the
-# trained model as a pickle file in the DB
+# Allowing the user to choose parameters to train the model
 class TrainModelForm(forms.Form):
-	
-	title = forms.CharField(max_length=255)
-	public = forms.BooleanField(required=False)
 	
 	# The new Select field
 	PARAM_CHOICES = [
@@ -58,6 +54,13 @@ class TrainModelForm(forms.Form):
 	param_selection = forms.ChoiceField(choices=PARAM_CHOICES, required=True)
 	
 #class
+
+# Requesting info from the user to save the
+# trained model as a pickle file in the DB
+class SaveTrainedModelForm(forms.Form):
+	title = forms.CharField(max_length=255)
+	public = forms.BooleanField(required=False)
+#class 
 
 
 class TopicsNamesForm(forms.ModelForm):

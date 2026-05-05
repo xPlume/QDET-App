@@ -2,12 +2,13 @@
 import pandas as pd
 import pickle
 import io
+import random
 
 # Text2Props imports
 from text2props.text2props.model import Text2PropsModel
 from text2props.text2props.modules.latent_traits_calibration import KnownParametersCalibrator
 from text2props.text2props.modules.estimators_from_text import MajorityEstimatorFromText
-from text2props.text2props.constants import DATA_PATH, WRONGNESS, QUESTION_DF_COLS, Q_ID, Q_TEXT, CORRECT_TEXTS, WRONG_TEXTS
+from text2props.text2props.constants import QUESTION_DF_COLS, Q_ID, Q_TEXT, CORRECT_TEXTS, WRONG_TEXTS, DIFFICULTY, DISCRIMINATION
 
 # Django imports
 from django.core.files.base import ContentFile
@@ -16,76 +17,88 @@ from directory.models import TrainedModel
 
 
 
-# Taking all the questions and setting the proper format for the Train
-def data_preparation(questions_queryset, object_info):
+def data_preparation(questions_info, parameter):
     
 	
-	# 1. Convert QuerySet to a list to allow shuffling and easy indexing
-	questions_list = list(questions_queryset)
+	# Parameters: 
+	# 1: Question Difficulty
+	# 2: Question Discrimination
+	# 3: Question Facility
 	
-	# 2. Build the wrongness dictionary
+	FACILITY = 'facility' # Not included in the text2props.constants
 	
-	"""
-	Parameters: 
-	1: Question Difficulty
-	2: Question Discrimination
-	3: Question Facility
-	"""
-	
-	if object_info.param_type== '1': # Difficulty
+	# Create the wrongness dictionary
+	if parameter== '1': # Difficulty
 		wrongness_dictionary = {
-			WRONGNESS: {
+			DIFFICULTY: {
 				q.id: 1 - float(q.question_difficulty)
-				for q in questions_list
+				for q in questions_info
 			}
 		}
-	elif object_info.param_type== '2': # Discrimination
+	elif parameter== '2': # Discrimination
 		wrongness_dictionary = {
-			WRONGNESS: {
+			DISCRIMINATION: {
 				q.id: 1 - float(q.question_discrimination)
-				for q in questions_list
+				for q in questions_info
 			}
 		}
-	elif object_info.param_type== '3': # Facility
+	elif parameter== '3': # Facility
 		wrongness_dictionary = {
-			WRONGNESS: {
+			FACILITY: {
 				q.id: 1 - float(q.question_facility)
-				for q in questions_list
+				for q in questions_info
 			}
 		}
 	#if
 	
 	
-	def prepare_questions_list(qs_subset):
-		""" Maps Django objects to the format needed by text2props. """
+	def prepare_questions_list(qs):
+		# Helper to map QuerySet objects to the required DataFrame format 
 		data = []
-		for q in qs_subset:
-			# Get all answers for this question (cached by prefetch)
+		for q in qs:
+			# Get all answers for this question
 			all_answers = list(q.answers.all())
-			
 			correct_texts = [a.answer for a in all_answers if a.is_correct]
 			wrong_texts = [a.answer for a in all_answers if not a.is_correct]
 			
 			data.append({
 				Q_ID: q.id,
-				# Accessing q.context.text (cached by select_related)
 				Q_TEXT: f"Context:\n{q.context.context}\n\nQuestion:\n{q.question}",
 				CORRECT_TEXTS: correct_texts,
-				WRONG_TEXTS: wrong_texts
+				WRONG_TEXTS: wrong_texts,
+				'context_id': q.context.id
 			})
 		#for
 		
-		return pd.DataFrame(data, columns=QUESTION_DF_COLS)
+		return pd.DataFrame(data)
 	#def
 	
 	
-	# 3. Process all questions into the training set
-	# We no longer split by context_id; we pass the entire questions_list
-	train_df = prepare_questions_list(questions_list)
-
+	# Train/Test Split logic based on Context ID
+	# We extract unique context IDs from the QuerySet
+	all_context_ids = list(set(q.context.id for q in questions_info))
+	random.shuffle(all_context_ids)
 	
-	return wrongness_dictionary, train_df
+	n_train = int(len(all_context_ids) * 0.8)
+	train_context_ids = set(all_context_ids[:n_train])
 	
+	# Split the original QuerySet/list into two groups
+	train_qs = [q for q in questions_info if q.context.id in train_context_ids]
+	test_qs = [q for q in questions_info if q.context.id not in train_context_ids]
+	
+	print(f"[INFO] Number training contexts: {n_train}")
+	print(f"[INFO] Length (n questions) of train_df: {len(train_qs)}")
+	print(f"[INFO] Length (n questions) of test_df: {len(test_qs)}")
+	
+	# Convert to DataFrames
+	train_df = prepare_questions_list(train_qs)
+	test_df = prepare_questions_list(test_qs)
+	
+	# Cleanup: Remove the temporary context_id column used for splitting if not in QUESTION_DF_COLS
+	train_df = train_df[QUESTION_DF_COLS]
+	test_df = test_df[QUESTION_DF_COLS]
+	
+	return wrongness_dictionary, train_df, test_df
 #def
 
 
@@ -94,40 +107,40 @@ def data_preparation(questions_queryset, object_info):
 
 # Saving the pickle file and creating an object in the DB to link it to a user
 def save_trained_model_to_db(text2props_model, object_info):
-	# 1. Create an in-memory byte stream
+	# Create an in-memory byte stream
 	buffer = io.BytesIO()
 
-	# 2. Pickle the model into the buffer
+	# Pickle the model into the buffer
 	pickle.dump(text2props_model, buffer)
 
-	# 3. Seek to the start of the buffer so Django can read it
+	# Seek to the start of the buffer so Django can read it
 	buffer.seek(0)
 
-	# 4. Create the Django Model instance
+	# Create the Django Model instance
 	new_model_record = TrainedModel(
 		title=object_info.title,
 		public=object_info.public,
 		uploader=object_info.uploader,
 	)
 	
-	# 5. Construct a unique filename using the UUID
+	# Construct a unique filename using the UUID
 	# We use the instance's pre-generated UUID for the filename
 	filename = f"{new_model_record.id}.pkl"
 	
-	# 6. Save the buffer content to the FileField
+	# Save the buffer content to the FileField
 	new_model_record.pickle_file.save(filename, ContentFile(buffer.read()), save=True)
 	
-	return new_model_record
 #def 
 
 
 
 
-def train_model(questions_info, object_info):
+def train_model(questions_info, parameter):
 	
 	# Preparing the data
 	# All questions are send as Training
-	known_latent_traits, df_train = data_preparation(questions_info, object_info)
+	#known_latent_traits, df_train = data_preparation(questions_info, parameter)
+	known_latent_traits, df_train, df_test = data_preparation(questions_info, parameter)
 	
 	
 	# Define the "calibrator".
@@ -147,7 +160,19 @@ def train_model(questions_info, object_info):
 	
 	
 	# Saving the tained model as a pickle file, with an object in the DB
-	new_model_record = save_trained_model_to_db(text2props_model, object_info)
+	#new_model_record = save_trained_model_to_db(text2props_model, object_info)
+	
+	
+	# perform predictions
+	predictions = text2props_model.predict(df_test)
+	#print(predictions)  # To have a look at the individual predictions
+	
+	
+	# evaluate model 
+	results = text2props_model.compute_error_metrics_latent_traits_estimation(df_test)
+	#print(results)
+	
+	return results, text2props_model
 	
 	
 #def 

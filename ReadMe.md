@@ -50,7 +50,7 @@ Make sure you have the following installed on your system:
 - **virtualenv**
 - **Git**
 
-You can verify your Python and pip installation with:
+You can verify your Python, GCC and pip installation with:
 
 ```bash
 python --version

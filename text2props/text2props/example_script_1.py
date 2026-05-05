@@ -18,7 +18,7 @@ def data_preparation():
     wrongness_dictionary = {
         WRONGNESS: {
             q_id: 1-facility
-            for q_id, facility in raw_df[['q_id', 'question_facility']].values
+            for q_id, facility in raw_df[['q_id', 'question_difficulty']].values
         }
     }
     print(f"[INFO] Number of questions in the wrongness dictionary: {len(wrongness_dictionary[WRONGNESS])}")
