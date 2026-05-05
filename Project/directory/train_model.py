@@ -8,7 +8,7 @@ import random
 from text2props.text2props.model import Text2PropsModel
 from text2props.text2props.modules.latent_traits_calibration import KnownParametersCalibrator
 from text2props.text2props.modules.estimators_from_text import MajorityEstimatorFromText
-from text2props.text2props.constants import QUESTION_DF_COLS, Q_ID, Q_TEXT, CORRECT_TEXTS, WRONG_TEXTS, DIFFICULTY, DISCRIMINATION
+from text2props.text2props.constants import QUESTION_DF_COLS, Q_ID, Q_TEXT, CORRECT_TEXTS, WRONG_TEXTS, DIFFICULTY, DISCRIMINATION, FACILITY
 
 # Django imports
 from django.core.files.base import ContentFile
@@ -24,8 +24,6 @@ def data_preparation(questions_info, parameter):
 	# 1: Question Difficulty
 	# 2: Question Discrimination
 	# 3: Question Facility
-	
-	FACILITY = 'facility' # Not included in the text2props.constants
 	
 	# Create the wrongness dictionary
 	if parameter== '1': # Difficulty

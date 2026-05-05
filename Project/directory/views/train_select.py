@@ -98,6 +98,9 @@ def train_select(request):
 				# Saving the model as pickle file and db object
 				save_trained_model_to_db(text2props_model, object_info)
 				
+				
+				messages.success(request, "The model was saved with success", extra_tags="success")
+				return redirect('user_questions')
 			#if
 			
 			else: 
@@ -107,16 +110,11 @@ def train_select(request):
 		#elif
 		
 		
-		
-		
-		# return redirect....
-		
 	#if
 	
 	else:
 		train_form = TrainModelForm()
 		save_form = SaveTrainedModelForm()
-		model_results = None
 	#else
 	
 	
