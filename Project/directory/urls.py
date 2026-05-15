@@ -14,7 +14,7 @@ urlpatterns = [
 	path("questions/<int:question_id>", views.single_question, name="single_question"),
 	path("questions/<int:question_id>/update", views.update_question, name="update_question"),
 	path("train_select/", views.train_select, name="train_select"),
-	path("test_select/", views.test_select, name="test_select"),
+	path("evaluate/", views.evaluate_select, name="evaluate_select"),
 	
 	
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

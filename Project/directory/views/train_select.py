@@ -1,15 +1,17 @@
+# Django imports
 from django.shortcuts import render, redirect
-from django.db.models import Prefetch
 from django.contrib import messages
-
 from django.contrib.auth.decorators import login_required
 
+# References to other files
 from directory.models import Question
 from directory.forms import TrainModelForm, SaveTrainedModelForm
-
 from directory.train_model import train_model, save_trained_model_to_db
 
+# Others
 from types import SimpleNamespace
+import codecs
+import pickle
 
 
 @login_required
@@ -19,6 +21,17 @@ def train_select(request):
 	
 	model_results = None
 	text2props_model = None
+	
+	"""
+	For this view, saving the loaded model (text2props_model) in a session
+	is mandatory. We obtain the model from the train_model, and save it in the
+	text2props_model variable. But we thenrefresh the page, losing the values of
+	variables - hence the mode, in the process.
+	
+	By saving the variable in a session, we preserve its value, allowing us to retrieve
+	it and properly save it even after a page refresh.
+	"""
+	
 	
 	if request.method == 'POST':
 		
@@ -74,6 +87,13 @@ def train_select(request):
 				"""
 				
 				model_results, text2props_model = train_model(questions_info, parameter)
+				
+				
+				# Cache the model in the session
+				# We serialize it to a base64 string so Django sessions can safely store it
+				serialized_model = codecs.encode(pickle.dumps(text2props_model), "base64").decode("utf-8")
+				request.session['temporary_trained_model'] = serialized_model
+				
 			#if
 			
 			
@@ -88,19 +108,35 @@ def train_select(request):
 			
 			if save_form.is_valid():
 				
-				# Fields for the db object
-				object_info = SimpleNamespace(
-					uploader = user,
-					title = save_form.cleaned_data['title'],
-					public = save_form.cleaned_data['public'],
-				)
-				
-				# Saving the model as pickle file and db object
-				save_trained_model_to_db(text2props_model, object_info)
+				# Retrieve the model from the session
+				serialized_model = request.session.get('temporary_trained_model')
 				
 				
-				messages.success(request, "The model was saved with success", extra_tags="success")
-				return redirect('user_questions')
+				if serialized_model:
+					# De-serialize back into a Python object
+					text2props_model = pickle.loads(codecs.decode(serialized_model.encode(), "base64"))
+					
+					object_info = SimpleNamespace(
+						uploader=user,
+						title=save_form.cleaned_data['title'],
+						public=save_form.cleaned_data['public'],
+					)
+					
+					# Saving the model as pickle file and db object
+					save_trained_model_to_db(text2props_model, object_info)
+					
+					# Clean up session memory now that it's safe in the permanent DB
+					del request.session['temporary_trained_model']
+					
+					messages.success(request, "The model was saved with success", extra_tags="success")
+					return redirect('user_questions')
+				#if 
+				else:
+					messages.error(request, "Training session expired or model not found. Please train again.", extra_tags="danger")
+					return redirect('train_select')
+				#else
+				
+				
 			#if
 			
 			else: 

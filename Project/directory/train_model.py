@@ -156,15 +156,14 @@ def get_range(questions_info, parameter):
 
 # Saving the pickle file and creating an object in the DB to link it to a user
 def save_trained_model_to_db(text2props_model, object_info):
+	
 	# Create an in-memory byte stream
 	buffer = io.BytesIO()
-
+	
 	# Pickle the model into the buffer
 	pickle.dump(text2props_model, buffer)
-
-	# Seek to the start of the buffer so Django can read it
-	buffer.seek(0)
-
+	
+	
 	# Create the Django Model instance
 	new_model_record = TrainedModel(
 		title=object_info.title,
@@ -176,8 +175,14 @@ def save_trained_model_to_db(text2props_model, object_info):
 	# We use the instance's pre-generated UUID for the filename
 	filename = f"{new_model_record.id}.pkl"
 	
+	# Safely extracts the raw bytes directly from the memory buffer
+	binary_data = buffer.getvalue()
+	
 	# Save the buffer content to the FileField
-	new_model_record.pickle_file.save(filename, ContentFile(buffer.read()), save=True)
+	new_model_record.pickle_file.save(filename, ContentFile(binary_data), save=True)
+	
+	# Clean up the buffer
+	buffer.close()
 	
 #def 
 
@@ -243,7 +248,7 @@ def train_model(questions_info, parameter):
 	
 	# The text2props model is made of a latent_traits_calibrator + estimator_from_text pair.
 	text2props_model = Text2PropsModel(latent_traits_calibrator, estimator_from_text)
-
+	
 	# Train the text2props_model
 	text2props_model.train(df_train=df_train)
 	
