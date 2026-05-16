@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Context, Question, Answer, TopicNames, Topics
+from .models import Context, Question, Answer, TopicNames, Topics, TrainedModel
 
 
 class ContextForm(forms.ModelForm):
@@ -43,15 +43,12 @@ class CSVuploadForm(forms.Form):
 
 
 # Allowing the user to choose parameters to train the model
-class TrainModelForm(forms.Form):
+class TrainModelForm(forms.ModelForm):
 	
-	# The new Select field
-	PARAM_CHOICES = [
-		('1', 'Question Difficulty'),
-		('2', 'Question Discrimination'),
-		('3', 'Question Facility'),
-	]
-	param_selection = forms.ChoiceField(choices=PARAM_CHOICES, required=True)
+	class Meta:
+		model = TrainedModel
+		fields = ['parameter']
+	#class
 	
 #class
 

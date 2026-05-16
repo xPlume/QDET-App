@@ -16,12 +16,12 @@
 	<div class="py-5 bg-dark hero-header mb-5">
 		<img src="{% static 'img/bg-hero.webp' %}" alt="Hero background" fetchpriority="high">
 		<div class="container hero-content text-center my-2 pt-5 pb-4">
-			<h1 class="display-3 text-white mb-3 animated fadeInDown roboto-font">Test your questions</h1>
+			<h1 class="display-3 text-white mb-3 animated fadeInDown roboto-font">Evaluate your questions</h1>
 			<nav aria-label="breadcrumb">
 			<ol class="breadcrumb justify-content-center">
 				<li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
 				<li class="breadcrumb-item"><a href="{% url 'user_questions' %}">MCQs</a></li>
-				<li class="breadcrumb-item text-white active" aria-current="page">Testing questions</li>
+				<li class="breadcrumb-item text-white active" aria-current="page">Evaluate questions</li>
 			</ol>
 			</nav>
 		</div>
@@ -49,7 +49,7 @@
 				<select name="param_selection" class="form-select form-select-lg" id="param_id">
 					<option value="">----------------</option>
 					{% for model in existing_models %}
-						<option value="{{ model.id }}">{{ model.title }}</option>
+						<option value="{{ model.id }}">[{{ model.get_parameter_display }}] {{ model.title }}</option>
 					{% endfor %}
 				</select>
 			</div>
@@ -60,7 +60,7 @@
 			
 			<!-- Test questions button-->
 			<div class="text-center my-3">
-				<button type="submit" class="btn btn-lg btn-outline-success">Test the questions</button>
+				<button type="submit" class="btn btn-lg btn-outline-success">Evaluate the questions</button>
 			</div>
 			
 		</div>

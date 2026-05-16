@@ -25,8 +25,8 @@ def train_select(request):
 	"""
 	For this view, saving the loaded model (text2props_model) in a session
 	is mandatory. We obtain the model from the train_model, and save it in the
-	text2props_model variable. But we thenrefresh the page, losing the values of
-	variables - hence the mode, in the process.
+	text2props_model variable. But we then refresh the page, losing the values of
+	variables - hence the model, in the process.
 	
 	By saving the variable in a session, we preserve its value, allowing us to retrieve
 	it and properly save it even after a page refresh.
@@ -45,27 +45,23 @@ def train_select(request):
 			if train_form.is_valid():
 				
 				# Obtaining the parameters from user selection
-				parameter = train_form.cleaned_data['param_selection']
+				parameter = train_form.cleaned_data['parameter']
 				
-				"""
-				Parameters: 
-				1: Question Difficulty
-				2: Question Discrimination
-				3: Question Facility
-				"""
 				
 				# Fetching questions with their context and all related answers
-				if parameter== '1': # Difficulty
+				if parameter== 'difficulty': # Difficulty
 					questions_info = Question.objects.filter(
 						uploader=user,
 						question_difficulty__isnull=False,
 					).select_related('context').prefetch_related('answers').order_by('-id')
-				elif parameter== '2': # Discrimination
+					
+				elif parameter== 'discrimination': # Discrimination
 					questions_info = Question.objects.filter(
 						uploader=user,
 						question_discrimination__isnull=False,
 					).select_related('context').prefetch_related('answers').order_by('-id')
-				elif parameter== '3': # Facility
+					
+				elif parameter== 'facility': # Facility
 					questions_info = Question.objects.filter(
 						uploader=user,
 						question_facility__isnull=False,
@@ -89,10 +85,12 @@ def train_select(request):
 				model_results, text2props_model = train_model(questions_info, parameter)
 				
 				
-				# Cache the model in the session
+				# Cache the model and parameter in the session
 				# We serialize it to a base64 string so Django sessions can safely store it
 				serialized_model = codecs.encode(pickle.dumps(text2props_model), "base64").decode("utf-8")
 				request.session['temporary_trained_model'] = serialized_model
+				serialized_parameter = parameter
+				request.session['temporary_parameter'] = serialized_parameter
 				
 			#if
 			
@@ -108,11 +106,12 @@ def train_select(request):
 			
 			if save_form.is_valid():
 				
-				# Retrieve the model from the session
+				# Retrieve the model and parameter from the session
 				serialized_model = request.session.get('temporary_trained_model')
+				serialized_parameter = request.session.get('temporary_parameter')
 				
 				
-				if serialized_model:
+				if serialized_model and serialized_parameter:
 					# De-serialize back into a Python object
 					text2props_model = pickle.loads(codecs.decode(serialized_model.encode(), "base64"))
 					
@@ -120,6 +119,7 @@ def train_select(request):
 						uploader=user,
 						title=save_form.cleaned_data['title'],
 						public=save_form.cleaned_data['public'],
+						parameter=serialized_parameter,
 					)
 					
 					# Saving the model as pickle file and db object
@@ -127,6 +127,7 @@ def train_select(request):
 					
 					# Clean up session memory now that it's safe in the permanent DB
 					del request.session['temporary_trained_model']
+					del request.session['temporary_parameter']
 					
 					messages.success(request, "The model was saved with success", extra_tags="success")
 					return redirect('user_questions')

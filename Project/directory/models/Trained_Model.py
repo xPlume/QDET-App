@@ -2,6 +2,7 @@ from django.db import models
 import os
 import uuid
 
+from directory.parameters import ParameterChoices
 from django.conf import settings
 User = settings.AUTH_USER_MODEL
 
@@ -16,6 +17,8 @@ class TrainedModel(models.Model):
 	title = models.CharField(max_length=255)
 	trained_at = models.DateTimeField(auto_now_add=True)
 	public = models.BooleanField(default=False)
+	
+	parameter = models.CharField(choices=ParameterChoices.choices, default=None, max_length=63)
 	
 	# The 'upload_to' argument organizes files into a subfolder
 	pickle_file = models.FileField(upload_to=pickle_file_path)

@@ -49,11 +49,11 @@
 			<!-- Select parameter-->
 			<div class="mb-5">
 				<label for="exampleSelect1" class="form-label"></label>
-				<select name="param_selection" class="form-select form-select-lg" id="param_id">
+				<select name="parameter" class="form-select form-select-lg" id="param_id">
 					<option value="">----------------</option>
-					<option value="1">Question Difficulty</option>
-					<option value="2">Question Discrimination</option>
-					<option value="3">Question Facility</option>
+					{% for value, label in train_form.parameter.field.choices %}
+						<option value="{{ value }}">{{ label }}</option>
+					{% endfor %}
 				</select>
 			</div>
 			

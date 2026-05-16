@@ -32,28 +32,22 @@ from django.db.models import Max, Min
 
 def data_preparation(questions_info, parameter):
     
-	
-	# Parameters: 
-	# 1: Question Difficulty
-	# 2: Question Discrimination
-	# 3: Question Facility
-	
 	# Create the wrongness dictionary
-	if parameter== '1': # Difficulty
+	if parameter == 'difficulty': # Difficulty
 		wrongness_dictionary = {
 			DIFFICULTY: {
 				q.id: 1 - float(q.question_difficulty)
 				for q in questions_info
 			}
 		}
-	elif parameter== '2': # Discrimination
+	elif parameter == 'discrimination': # Discrimination
 		wrongness_dictionary = {
 			DISCRIMINATION: {
 				q.id: 1 - float(q.question_discrimination)
 				for q in questions_info
 			}
 		}
-	elif parameter== '3': # Facility
+	elif parameter == 'facility': # Facility
 		wrongness_dictionary = {
 			FACILITY: {
 				q.id: 1 - float(q.question_facility)
@@ -120,23 +114,18 @@ def data_preparation(questions_info, parameter):
 # Obtain the max and min values of the latent-trait
 def get_range(questions_info, parameter):
 	
-	# Parameters: 
-	# 1: Question Difficulty
-	# 2: Question Discrimination
-	# 3: Question Facility
-	
 	# Aggregate min and max directly from the database
-	if parameter== '1': # Difficulty
+	if parameter== 'difficulty': # Difficulty
 		result = questions_info.aggregate(
 			min_diff=Min('question_difficulty'),
 			max_diff=Max('question_difficulty')
 		)
-	elif parameter== '2': # Discrimination
+	elif parameter== 'discimination': # Discrimination
 		result = questions_info.aggregate(
 			min_diff=Min('question_discrimination'),
 			max_diff=Max('question_discrimination')
 		)
-	elif parameter== '3': # Facility
+	elif parameter== 'facility': # Facility
 		result = questions_info.aggregate(
 			min_diff=Min('question_facility'),
 			max_diff=Max('question_facility')
@@ -169,6 +158,7 @@ def save_trained_model_to_db(text2props_model, object_info):
 		title=object_info.title,
 		public=object_info.public,
 		uploader=object_info.uploader,
+		parameter=object_info.parameter,
 	)
 	
 	# Construct a unique filename using the UUID
@@ -215,7 +205,7 @@ def train_model(questions_info, parameter):
 	# 3: Question Facility
 	
 	# Create the wrongness dictionary
-	if parameter== '1': # Difficulty
+	if parameter== 'difficulty': # Difficulty
 		estimator_from_text = FeatureEngAndRegressionEstimatorFromText(
 			{
 				DIFFICULTY: FeatureEngAndRegressionPipeline(
@@ -224,7 +214,7 @@ def train_model(questions_info, parameter):
 				)
 			}
 		)
-	elif parameter== '2': # Discrimination
+	elif parameter== 'discrimination': # Discrimination
 		estimator_from_text = FeatureEngAndRegressionEstimatorFromText(
 			{
 				DISCRIMINATION: FeatureEngAndRegressionPipeline(
@@ -233,7 +223,7 @@ def train_model(questions_info, parameter):
 				)
 			}
 		)
-	elif parameter== '3': # Facility
+	elif parameter== 'facility': # Facility
 		estimator_from_text = FeatureEngAndRegressionEstimatorFromText(
 			{
 				FACILITY: FeatureEngAndRegressionPipeline(
