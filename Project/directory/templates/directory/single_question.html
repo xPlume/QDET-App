@@ -36,9 +36,15 @@
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-lg-10 col-xl-8">
-
+			
+			<!-- Back to list button -->
+			<div class="my-3 d-flex justify-content-between">
+                <a href="{% url 'user_questions' %}" class="btn btn-link text-decoration-none text-muted">← Back to List</a>
+            </div>
+			
+			
             <div class="card shadow-sm border-secondary-subtle">
-                <div class="card-body p-4 p-md-5">
+                <div class="card-body px-4 p-md-5">
                     
                     <div class="mb-4 px-4 py-3 rounded-3" style="border-left: 5px solid #6c757d;">
                         <h6 class="text-uppercase text-muted fw-bold small mb-2">{{ question.context.context_title }}</h6>
@@ -90,50 +96,52 @@
 					<h5 class="mt-4">Question discrimination: {{ question.question_discrimination|default_if_none:'--' }}</h5>
 					<h5 class="mt-4">Question facility: {{ question.question_facility|default_if_none:'--' }}</h5>
 					
-					</div>
-					
-					<!-- Form start -->
-					<form method="POST" enctype="multipart/form-data">
-					{% csrf_token %}
-						
-						<!-- Select parameter-->
-						<div class="mb-5">
-							<label for="exampleSelect1" class="form-label"></label>
-							<select name="param_selection" class="form-select form-select-lg" id="param_id">
-								<option value="">----------------</option>
-								{% for model in existing_models %}
-									<option value="{{ model.id }}">[{{ model.get_parameter_display }}] {{ model.title }}</option>
-								{% endfor %}
-							</select>
-						</div>
-						
-						
-						<!-- Evaluate question -->
-						<div class="text-center my-3">
-							<button type="submit" class="btn btn-lg btn-outline-success">Evaluate</button>
-						</div>
-					</form>
-					
-					
+				</div>
+				
+				<!-- Update Question -->
+				<div class="d-flex justify-content-center">
+					<a href="{% url 'update_question' question.id %}">
+						<button type="button" class="btn btn-lg btn-outline-primary mb-5">Update question</button>
+					</a>
+				</div>
+				
+				
             </div>
 			
 			
-			<!-- Update Question -->
-			<div class="d-flex justify-content-end">
-				<a href="{% url 'update_question' question.id %}">
-					<button type="button" class="btn btn-lg btn-outline-primary m-5">Update question</button>
-				</a>
-			</div>
+			
+			<!-- Form start -->
+			
+			<form method="POST" enctype="multipart/form-data">
+			{% csrf_token %}
+				
+				<legend class="mt-5">Evaluate this question</legend>
+				
+				<!-- Select models -->
+				<div class="mt-5 mb-4">
+					{% for model in existing_models %}
+						<div class="form-check">
+							<input class="form-check-input" 
+								   type="checkbox" 
+								   name="selected_ids" 
+								   id="check_{{ model.id }}" 
+								   value="{{ model.id }}">
+							<label class="form-check-label" for="check_{{ model.id }}">
+								[{{ model.get_parameter_display }}] {{ model.title }}
+							</label>
+						</div>
+					{% endfor %}
+				</div>
+				
+				
+				<!-- Evaluate question -->
+				<div class="mb-3">
+					<button type="submit" class="btn btn-lg btn-outline-success">Evaluate</button>
+				</div>
+			</form>
 			
 			
-			<div class="my-3 d-flex justify-content-between">
-                <a href="{% url 'user_questions' %}" class="btn btn-link text-decoration-none text-muted">
-                    ← Back to List
-                </a>
-            </div>
 			
-			
-
         </div>
     </div>
 </div>

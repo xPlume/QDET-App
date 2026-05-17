@@ -28,23 +28,21 @@ def single_question(request, question_id):
 	# Evaluating the question
 	if request.method == 'POST':
 		
-		# Obtaining the ID of the selected model
-		selected_id = request.POST.get('param_selection')
+		# Obtaining the IDs of the selected models
+		selected_ids = request.POST.getlist('selected_ids')
 		
-		if selected_id:
-			
-			# Obtaining the question
-			questions_info = Question.objects.filter(
-				id=question_id
-			).select_related('context').prefetch_related('answers').order_by('-id')
-			
+		# Obtaining the question
+		questions_info = Question.objects.filter(
+			id=question_id
+		).select_related('context').prefetch_related('answers').order_by('-id')
+		
+		for model_id in selected_ids:
 			# Query the model
-			model_instance = get_object_or_404(TrainedModel, id=selected_id, uploader=user)
+			model_instance = get_object_or_404(TrainedModel, id=model_id, uploader=user)
 			
 			# Calling the evaluate function
 			evaluate(questions_info, model_instance)
-			
-		#if
+		#for
 		
 		
 	#if

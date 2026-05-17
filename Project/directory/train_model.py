@@ -120,7 +120,7 @@ def get_range(questions_info, parameter):
 			min_diff=Min('question_difficulty'),
 			max_diff=Max('question_difficulty')
 		)
-	elif parameter== 'discimination': # Discrimination
+	elif parameter== 'discrimination': # Discrimination
 		result = questions_info.aggregate(
 			min_diff=Min('question_discrimination'),
 			max_diff=Max('question_discrimination')
