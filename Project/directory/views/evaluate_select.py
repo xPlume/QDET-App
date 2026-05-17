@@ -21,7 +21,7 @@ def evaluate_select(request):
 	
 	# Obtaining the selected model
 	if request.method == 'POST':
-		# Get the ID string from the <select> name attribute
+		# Obtaining the ID of the selected model
 		selected_id = request.POST.get('param_selection')
 		
 		if selected_id:

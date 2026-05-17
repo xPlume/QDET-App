@@ -95,6 +95,19 @@
 					<!-- Form start -->
 					<form method="POST" enctype="multipart/form-data">
 					{% csrf_token %}
+						
+						<!-- Select parameter-->
+						<div class="mb-5">
+							<label for="exampleSelect1" class="form-label"></label>
+							<select name="param_selection" class="form-select form-select-lg" id="param_id">
+								<option value="">----------------</option>
+								{% for model in existing_models %}
+									<option value="{{ model.id }}">[{{ model.get_parameter_display }}] {{ model.title }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						
+						
 						<!-- Evaluate question -->
 						<div class="text-center my-3">
 							<button type="submit" class="btn btn-lg btn-outline-success">Evaluate</button>

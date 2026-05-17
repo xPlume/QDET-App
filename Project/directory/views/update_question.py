@@ -61,9 +61,11 @@ def update_question(request, question_id):
 				update_instance.topic_name = topic_object
 				update_instance.save()
 			#
-			else: # Delete the object
-				print("GOT INTO THE DELETE")
-				update_instance.delete()
+			else: 
+				# if there was a topic selected previously
+				if corresponding_topic is not None:
+					update_instance.delete()
+				#if
 			#
 			
 			
