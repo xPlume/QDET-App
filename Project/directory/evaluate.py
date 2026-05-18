@@ -5,6 +5,13 @@ import pickle
 # Text2Props imports
 from text2props.text2props.constants import QUESTION_DF_COLS, Q_ID, Q_TEXT, CORRECT_TEXTS, WRONG_TEXTS
 
+# Django imports
+from django.db import transaction
+from django.contrib.auth import get_user_model
+
+# Reference to other files
+from directory.models import Prediction, Question
+
 
 # Taking all the questions, and setting the proper format for the Test 
 def prepare_test_data(questions_info):
@@ -34,7 +41,57 @@ def prepare_test_data(questions_info):
 
 
 
-def evaluate(questions_info, model_instance):
+def save_predictions(questions_info, model_instance, prediction_result, user):
+	
+	# Obtaining the parameter
+	parameter_value = model_instance.parameter 
+	
+	# Extracting the values of the predictions
+	values_array = prediction_result.get(parameter_value)
+	
+	if values_array is None:
+		raise ValueError(f"No evaluation values found for parameter: '{parameter_value}'")
+	#if
+	
+	# Converting the Django queryset to a list
+	questions_list = list(questions_info)
+	
+	# Safety Check: Ensure the lengths match before processing
+	if len(questions_list) != len(values_array):
+		raise ValueError(
+			f"Mismatch length: Found {len(questions_list)} questions but {len(values_array)} values."
+		)
+	#if
+	
+	# Building the list of unsaved Prediction instances
+	predictions_to_create = []
+	
+	# zip lets us iterate through both the questions and values simultaneously in order
+	for question, value in zip(questions_list, values_array):
+		predictions_to_create.append(
+			Prediction(
+				question=question,
+				model_used = model_instance,
+				value=value,
+				parameter=parameter_value,
+				user = user,
+			)
+		)
+	#for
+	
+	# Perform a single batch insert into the database
+	# We wrap it in a transaction block to guarantee all-or-nothing database integrity
+	with transaction.atomic():
+		created_predictions = Prediction.objects.bulk_create(predictions_to_create)
+	#with 
+	
+#def
+
+
+
+
+
+def evaluate(questions_info, model_instance, user):
 	
 	
 	# Preparing the data
@@ -49,6 +106,10 @@ def evaluate(questions_info, model_instance):
 	# perform predictions
 	predictions = text2props_model.predict(df_test)
 	print(predictions) # To have a look at the individual predictions
+	
+	
+	# Saving predictions in the db
+	save_predictions(questions_info, model_instance, predictions, user)
 	
 	
 #def 

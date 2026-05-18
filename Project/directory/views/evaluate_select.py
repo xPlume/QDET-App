@@ -1,10 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+# Django imports
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Prefetch
-
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
+# Referece to other files
 from directory.models import Question, TrainedModel
-
 from directory.evaluate import evaluate
 
 
@@ -29,16 +30,17 @@ def evaluate_select(request):
 			# Obtaining the users's questions
 			questions_info = Question.objects.filter(
 				uploader=user,
-			).select_related('context').prefetch_related('answers').order_by('-id')
+			).select_related('context').prefetch_related('answers').order_by('id')
 			
 			
 			# Query the model
 			model_instance = get_object_or_404(TrainedModel, id=selected_id, uploader=user)
 			
 			# Calling the evaluate function
-			evaluate(questions_info, model_instance)
+			evaluate(questions_info, model_instance, user)
 			
-			# return redirect...
+			messages.success(request, f"Successfully evaluated all the questions.", extra_tags="success")
+			return redirect('index')
 			
 		#if
 	#if
