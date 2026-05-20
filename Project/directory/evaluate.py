@@ -105,7 +105,7 @@ def evaluate(questions_info, model_instance, user):
 	
 	# perform predictions
 	predictions = text2props_model.predict(df_test)
-	print(predictions) # To have a look at the individual predictions
+	#print(predictions) # To have a look at the individual predictions
 	
 	
 	# Saving predictions in the db

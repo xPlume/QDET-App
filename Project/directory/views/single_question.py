@@ -41,7 +41,7 @@ def single_question(request, question_id):
 			model_instance = get_object_or_404(TrainedModel, id=model_id, uploader=user)
 			
 			# Calling the evaluate function
-			evaluate(questions_info, model_instance)
+			evaluate(questions_info, model_instance, user)
 		#for
 		
 		

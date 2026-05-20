@@ -36,21 +36,21 @@ def data_preparation(questions_info, parameter):
 	if parameter == 'difficulty': # Difficulty
 		wrongness_dictionary = {
 			DIFFICULTY: {
-				q.id: 1 - float(q.question_difficulty)
+				q.id: float(q.question_difficulty)
 				for q in questions_info
 			}
 		}
 	elif parameter == 'discrimination': # Discrimination
 		wrongness_dictionary = {
 			DISCRIMINATION: {
-				q.id: 1 - float(q.question_discrimination)
+				q.id: loat(q.question_discrimination)
 				for q in questions_info
 			}
 		}
 	elif parameter == 'facility': # Facility
 		wrongness_dictionary = {
 			FACILITY: {
-				q.id: 1 - float(q.question_facility)
+				q.id: float(q.question_facility)
 				for q in questions_info
 			}
 		}

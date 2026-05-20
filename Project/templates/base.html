@@ -119,7 +119,7 @@
 						{% if request.user.is_authenticated %}
 							
 							<div class="dropdown">
-								<a class="nav-link nav-link dropdown-toggle ms-3 {% if request.resolver_match.url_name == 'create' %}active{% elif request.resolver_match.url_name == 'upload_csv' %}active{% endif %}" data-bs-toggle="dropdown" href="#" aria-expanded="false">Create Question</a>
+								<a class="nav-link nav-link dropdown-toggle ms-3 {% if request.resolver_match.url_name == 'new_context' %}active{% elif request.resolver_match.url_name == 'upload_csv' %}active{% endif %}" data-bs-toggle="dropdown" href="#" aria-expanded="false">Create Question</a>
 								<ul class="dropdown-menu drop-navbar">
 									<li><a class="dropdown-item" href="{% url 'new_context' %}">Individual Question</a></li>
 									<li><a class="dropdown-item" href="{% url 'upload_csv' %}">Bulk Import</a></li>

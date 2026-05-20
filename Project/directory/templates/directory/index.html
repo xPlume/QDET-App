@@ -37,6 +37,271 @@
 
 {% block content %}
 	
-	<h1>Hello World</h1>
+	<style>
+	/* Card base transition */
+	.custom-mcq-card .transition-all {
+		transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+	}
+	
+	/* Arrow base transition */
+	.custom-mcq-card .arrow-icon {
+		transition: transform 0.3s ease;
+	}
+	
+	/* Hover effects */
+	.custom-mcq-card:hover .transition-all {
+		transform: translateY(-4px) scale(1.01);
+		box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+		border-color: var(--bs-primary) !important;
+	}
+	
+	/* Nudge the arrow slightly to the right on hover */
+	.custom-mcq-card:hover .arrow-icon {
+		transform: translateX(5px);
+	}
+	</style>
+	
+	
+	<div class="container-lg">
+		
+		<!-- User name -->
+		<h6 class="lead mb-0">Welcome back</h6>
+		<h3 class="mb-4"><strong>{{ user.username }}</strong></h3>
+		
+		
+		
+		
+		<!-- Navigation buttons -->
+		<div class="row">
+			
+			<!-- Create new MCQ -->
+			<div class="col-12 col-md-6 py-2">
+				<a href="{% url 'new_context' %}" class="text-decoration-none custom-mcq-card" style="text-decoration: none; color: inherit;">
+					<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm transition-all">
+						
+						<div class="d-flex align-items-center gap-4">
+							<!-- Icon -->
+							<div class="flex-shrink-0 bg-primary rounded-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+								<i class="fa fa-2x fa-circle-plus text-white"></i>
+							</div>
+							
+							<!-- Text -->
+							<div>
+								<h4 class="fw-bold mb-1 fs-5">Create New MCQ</h4>
+								<p class="text-muted mb-0 small fs-6">Add a context + question + answers</p>
+							</div>
+						</div>
+						
+						<div class="pe-2 arrow-icon">
+							<h4> → </h4>
+						</div>
+						
+					</div>
+				</a>
+			</div>
+			
+			
+			<!-- Bulk import -->
+			<div class="col-12 col-md-6 py-2">
+				<a href="{% url 'upload_csv' %}" class="text-decoration-none custom-mcq-card" style="text-decoration: none; color: inherit;">
+					<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm transition-all">
+						
+						<div class="d-flex align-items-center gap-4">
+							<!-- Icon -->
+							<div class="flex-shrink-0 bg-primary rounded-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+								<i class="fa fa-2x fa-file-csv text-white"></i>
+							</div>
+							
+							<!-- Text -->
+							<div>
+								<h4 class="fw-bold mb-1 fs-5">Bulk Import</h4>
+								<p class="text-muted mb-0 small fs-6">Upload of CSV of contexts and questions</p>
+							</div>
+						</div>
+						
+						<div class="pe-2 arrow-icon">
+							<h4> → </h4>
+						</div>
+						
+					</div>
+				</a>
+			</div>
+			
+			
+			
+			<!-- Train a model -->
+			<div class="col-12 col-md-6 py-2">
+				<a href="{% url 'train_select' %}" class="text-decoration-none custom-mcq-card" style="text-decoration: none; color: inherit;">
+					<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm transition-all">
+						
+						<div class="d-flex align-items-center gap-4">
+							<!-- Icon -->
+							<div class="flex-shrink-0 bg-success rounded-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+								<i class="fa fa-2x fa-graduation-cap text-white"></i>
+							</div>
+							
+							<!-- Text -->
+							<div>
+								<h4 class="fw-bold mb-1 fs-5">Train a model</h4>
+								<p class="text-muted mb-0 small fs-6">Difficulty - Discrimination - Facility</p>
+							</div>
+						</div>
+						
+						<div class="pe-2 arrow-icon">
+							<h4> → </h4>
+						</div>
+						
+					</div>
+				</a>
+			</div>
+			
+			
+			<!-- Evaluate Questions -->
+			<div class="col-12 col-md-6 py-2">
+				<a href="{% url 'evaluate_select' %}" class="text-decoration-none custom-mcq-card" style="text-decoration: none; color: inherit;">
+					<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm transition-all">
+						
+						<div class="d-flex align-items-center gap-4">
+							<!-- Icon -->
+							<div class="flex-shrink-0 bg-success rounded-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+								<i class="fa fa-2x fa-chart-line text-white"></i>
+							</div>
+							
+							<!-- Text -->
+							<div>
+								<h4 class="fw-bold mb-1 fs-5">Evaluate Questions</h4>
+								<p class="text-muted mb-0 small fs-6">Run a trained model over your MCQs</p>
+							</div>
+						</div>
+						
+						<div class="pe-2 arrow-icon">
+							<h4> → </h4>
+						</div>
+						
+					</div>
+				</a>
+			</div>
+			
+		</div>
+		
+		
+		
+		
+		
+		<!-- Info on Context - Questions - Trained model -->
+		<div class="row my-3">
+			
+			<!-- Context -->
+			<div class="col-4 py-2">
+				<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
+					<div class="d-flex align-items-center gap-4">
+						<div>
+							<!-- Text -->
+							<h2 class="fw-bold mb-1">{{ nb_context }}</h2>
+							<p class="mb-0 fw-bold">Contexts</p>
+							<p class="text-muted mb-0 small fs-6">Reading passages</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Questions -->
+			<div class="col-4 py-2">
+				<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
+					<div class="d-flex align-items-center gap-4">
+						<div>
+							<!-- Text -->
+							<h2 class="fw-bold mb-1">{{ nb_questions }}</h2>
+							<p class="mb-0 fw-bold">Questions</p>
+							<p class="text-muted mb-0 small fs-6">Across {{ nb_context }} contexts</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Context -->
+			<div class="col-4 py-2">
+				<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
+					<div class="d-flex align-items-center gap-4">
+						<div>
+							<!-- Text -->
+							<h2 class="fw-bold mb-1 text-primary">6</h2>
+							<p class="mb-0 fw-bold">Trained models</p>
+							<p class="text-muted mb-0 small fs-6">Difficulty, Discrimination, Facility</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		</div>
+		
+		
+		
+		
+		<!-- Latest MCQs Table -->
+		<div class="card border rounded-4 shadow-sm p-4">
+		
+			<!-- Title -->
+			<div class="d-flex justify-content-between align-items-center mb-4">
+				<h3 class="fw-bold fs-4 mb-0">Latest MCQs</h3>
+				<a href="{% url 'user_questions' %}" class="text-primary fw-semibold small" style="text-decoration: none; color: inherit;">See all &rarr;</a>
+			</div>
+			
+			<!-- Table start -->
+			<table class="table table-hover align-middle mb-0">
+				<thead>
+					<tr class="table-active border-bottom">
+						<th scope="col" class="py-3 ps-3" style="width: 15%;">Context ID</th>
+						<th scope="col" class="py-3" style="width: 12%;">Question ID</th>
+						<th scope="col" class="py-3" style="width: 45%;">Question</th>
+						<th scope="col" class="py-3 text-end" style="width: 10%;">Difficulty</th>
+						<th scope="col" class="py-3 text-end" style="width: 9%;">Discrim.</th>
+						<th scope="col" class="py-3 text-end pe-3" style="width: 9%;">Facility</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					{% for question in questions %}
+					<tr>
+						<td class="py-4 ps-3">
+							<span class="text-muted d-block text-truncate-2" title="Blogging: Confessing to the world...">{{ question.context.context_id }}</span>
+						</td>
+						
+						<td class="py-4">
+							<span class="fw-bold">{{ question.q_id }}</span>
+						</td>
+						
+						<td class="py-4">
+							<a href="{% url 'single_question' question.id %}" class="text-decoration-none custom-table-link">{{ question.question }}</a>
+						</td>
+						
+						<td class="py-4 text-end">
+							<span class="fw-medium">{{ question.question_difficulty|default_if_none:'--' }}</span>
+						</td>
+						
+						<td class="py-4 text-end">
+							<span class="fw-medium">{{ question.question_discrimination|default_if_none:'--' }}</span>
+						</td>
+						
+						<td class="py-4 text-end pe-3">
+							<span class="fw-medium">{{ question.question_facility|default_if_none:'--' }}</span>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			
+		</div>
+		
+		
+		
+		
+		
+		
+		
+		<!-- Bottom margin -->
+		<div class="py-4"></div>
+		
+	</div>
 	
 {% endblock %}
