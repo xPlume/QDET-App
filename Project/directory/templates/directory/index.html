@@ -238,8 +238,49 @@
 		
 		
 		
+		
+		
+		
+		<!-- Data Distributions -->
+		<div class="card border rounded-4 shadow-sm p-4 my-3">
+		
+			<!-- Title -->
+			<div class="d-flex justify-content-between align-items-center mb-4">
+				<div>
+					<h3 class="fw-bold fs-4 mb-0">Data Distributions</h3>
+					<p class="text-muted mb-0 small fs-6">Distribution of evaluated questions across each model</p>
+				</div>
+				<div>
+					<h2 class="fw-bold mb-1">{{ nb_histograms }}</h2>
+					<p class="mb-0 fw-bold">Evaluations</p>
+					<a href="{% url 'user_questions' %}" class="text-primary fw-semibold small" style="text-decoration: none; color: inherit;">See all &rarr;</a>
+				</div>
+			</div>
+			
+			
+			<!-- Histograms -->
+			<div class="row">
+				{% for histogram in histograms %}
+					<!-- Histograms -->
+					<div class="col-6 text-center">
+						<h4 class="fw-bold mb-0">{{ histogram.model_used.title }}</h4>
+						<p class="text-muted small fs-6">Last update: {{ histogram.created_at }}</p>
+						<img src="{{ histogram.chart_image.url }}" alt="Histogram" style="max-width: 100%; height: auto;">
+					</div>
+				{% endfor %}
+			</div>
+		
+		</div>
+		
+		
+		
+		
+		
+		
+		
+		
 		<!-- Latest MCQs Table -->
-		<div class="card border rounded-4 shadow-sm p-4">
+		<div class="card border rounded-4 shadow-sm p-4 my-3">
 		
 			<!-- Title -->
 			<div class="d-flex justify-content-between align-items-center mb-4">
@@ -292,8 +333,6 @@
 			</table>
 			
 		</div>
-		
-		
 		
 		
 		

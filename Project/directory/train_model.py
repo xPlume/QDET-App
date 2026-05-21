@@ -43,7 +43,7 @@ def data_preparation(questions_info, parameter):
 	elif parameter == 'discrimination': # Discrimination
 		wrongness_dictionary = {
 			DISCRIMINATION: {
-				q.id: loat(q.question_discrimination)
+				q.id: float(q.question_discrimination)
 				for q in questions_info
 			}
 		}
