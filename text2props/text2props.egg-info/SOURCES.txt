@@ -3,10 +3,6 @@ README.md
 pyproject.toml
 setup.py
 text2props/__init__.py
-text2props/example_model_1.py
-text2props/example_script_1.py
-text2props/example_script_2.py
-text2props/example_script_2_V2.py
 text2props.egg-info/PKG-INFO
 text2props.egg-info/SOURCES.txt
 text2props.egg-info/dependency_links.txt

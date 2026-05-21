@@ -8,9 +8,11 @@ from text2props.text2props.constants import QUESTION_DF_COLS, Q_ID, Q_TEXT, CORR
 # Django imports
 from django.db import transaction
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 
 # Reference to other files
 from directory.models import Prediction, Question
+from directory.histogram_creation import create_histogram
 
 
 # Taking all the questions, and setting the proper format for the Test 
@@ -39,8 +41,11 @@ def prepare_test_data(questions_info):
 
 
 
-
-
+"""
+Function that takes the questions with their predictions.
+If the question already had a prediction with the same model, delete it
+then, save the new prediction. Else, just save the prediction.
+"""
 def save_predictions(questions_info, model_instance, prediction_result, user):
 	
 	# Obtaining the parameter
@@ -63,27 +68,36 @@ def save_predictions(questions_info, model_instance, prediction_result, user):
 		)
 	#if
 	
+	
 	# Building the list of unsaved Prediction instances
 	predictions_to_create = []
 	
-	# zip lets us iterate through both the questions and values simultaneously in order
 	for question, value in zip(questions_list, values_array):
 		predictions_to_create.append(
 			Prediction(
 				question=question,
-				model_used = model_instance,
+				model_used=model_instance,
 				value=value,
 				parameter=parameter_value,
-				user = user,
+				user=user,
 			)
 		)
 	#for
 	
-	# Perform a single batch insert into the database
-	# We wrap it in a transaction block to guarantee all-or-nothing database integrity
+	# Wrap the delete and insert in a single transaction to ensure data integrity
 	with transaction.atomic():
+		# Efficiently delete existing records matching the unique criteria
+		# Because 'model_used' and 'user' are constant for this entire batch,
+		# we only need to filter 'question' by the incoming list of questions.
+		Prediction.objects.filter(
+			model_used=model_instance,
+			user=user,
+			question__in=questions_list
+		).delete()
+		
+		# Perform the single batch insert into the database
 		created_predictions = Prediction.objects.bulk_create(predictions_to_create)
-	#with 
+	#with
 	
 #def
 
@@ -111,5 +125,6 @@ def evaluate(questions_info, model_instance, user):
 	# Saving predictions in the db
 	save_predictions(questions_info, model_instance, predictions, user)
 	
+	create_histogram(model_instance, user)
 	
 #def 
