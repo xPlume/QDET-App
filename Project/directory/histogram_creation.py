@@ -1,6 +1,7 @@
 import io
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 from django.core.files.base import ContentFile
 from directory.models import Histogram, Prediction
 
@@ -38,42 +39,60 @@ def create_histogram(model_used, user):
 	total_elements = len(float_data)
 	
 	# Map dynamic X-axis labels to provide context for the legend label
-	label_mapping = {
-		"difficulty": "Difficulty (%)",
-		"discrimination": "Discrimination",
-		"facility": "Facility"
+	metric_configs = {
+		"difficulty": {
+			"x_label": "Difficulty (%)",
+			"legend_title": "Difficulty",
+			"color": "dodgerblue",
+			"axis_range": (0, 100, 10)  # From 0% to 100% every 10%
+		},
+		"discrimination": {
+			"x_label": "Discrimination",
+			"legend_title": "Discrimination",
+			"color": "orange",
+			"axis_range": (-1.0, 1.0, 0.2)  # E.g., -1.0 to 1.0 every 0.2
+		},
+		"facility": {
+			"x_label": "Facility",
+			"legend_title": "Facility",
+			"color": "limegreen",
+			"axis_range": (0.0, 1.0, 0.1)  # From 0.0 to 1.0 every 0.1
+		}
 	}
-	x_label = label_mapping.get(parameter_value, "Values")
 	
-	color_mapping = {
-		"difficulty": "dodgerblue",
-		"discrimination": "orange",
-		"facility": "limegreen",
-	}
-	
-	title_mapping = {
-		"difficulty": "Difficulty",
-		"discrimination": "Discrimination",
-		"facility": "Facility"
-	}
+	# Fallback configuration if parameter doesn't match keys
+	config = metric_configs.get(parameter_value.lower(), {
+		"x_label": "Values",
+		"legend_title": "Distribution",
+		"color": "dodgerblue",
+		"axis_range": (min(float_data), max(float_data), (max(float_data) - min(float_data)) / 5)
+	})
 	
 	# Plotting the histogram
 	sns.histplot(
 		data=float_data, 
 		bins='auto', 
-		color=color_mapping.get(parameter_value),        
+		color=config["color"],        
 		alpha=0.7,             
 		edgecolor="white",      
 		linewidth=0.8,
 		kde=True,              
-		label=title_mapping.get(parameter_value),
+		label=config["legend_title"],
 		ax=ax
 	)
 	
+	# Applying fixed x-axis intervals
+	start, stop, step = config["axis_range"]
+	fixed_ticks = np.arange(start, stop + (step / 100), step) 
+	
+	ax.set_xticks(fixed_ticks)
+	ax.set_xlim(start, stop)
+	
+	
 	# Labels & Typography
 	ax.set_ylabel('Frequency', fontsize=11, labelpad=10, color='#34495e')
-	ax.set_xlabel(x_label, fontsize=11, labelpad=10, color='#34495e')
-
+	ax.set_xlabel(config["x_label"], fontsize=11, labelpad=10, color='#34495e')
+	
 	# Legend
 	ax.legend(loc="upper left", frameon=True, facecolor="white", edgecolor="none")
 
@@ -103,6 +122,8 @@ def create_histogram(model_used, user):
 	plt.close(fig)
 	
 	
+	# If entity of that exact histogram exists, delete it.
+	Histogram.objects.filter(user=user, model_used=model_used).delete()
 	
 	# Saving a Histogram object in the database
 	chart_instance = Histogram(

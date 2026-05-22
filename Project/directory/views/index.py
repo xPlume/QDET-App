@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 
 
-from directory.models import Context, Question, Histogram
+from directory.models import Context, Question, TrainedModel, Histogram
 
 def index(request):
 	
@@ -16,6 +16,9 @@ def index(request):
 		uploader = user
 	).count()
 	
+	nb_model = TrainedModel.objects.filter(
+		uploader = user,
+	).count()
 	
 	# Restricting the queryset to 4 object, not more
 	questions = Question.objects.filter(
@@ -36,6 +39,7 @@ def index(request):
 		"user": user,
 		"nb_context": nb_context,
 		"nb_questions": nb_questions,
+		"nb_model": nb_model,
 		"questions": questions,
 		"histograms": histograms,
 		"nb_histograms": nb_histograms,

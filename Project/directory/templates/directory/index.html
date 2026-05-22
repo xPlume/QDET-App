@@ -225,7 +225,7 @@
 					<div class="d-flex align-items-center gap-4">
 						<div>
 							<!-- Text -->
-							<h2 class="fw-bold mb-1 text-primary">6</h2>
+							<h2 class="fw-bold mb-1 text-primary">{{ nb_model|default_if_none:'0' }}</h2>
 							<p class="mb-0 fw-bold">Trained models</p>
 							<p class="text-muted mb-0 small fs-6">Difficulty, Discrimination, Facility</p>
 						</div>
@@ -247,7 +247,7 @@
 			<!-- Title -->
 			<div class="d-flex justify-content-between align-items-center mb-4">
 				<div>
-					<h3 class="fw-bold fs-4 mb-0">Data Distributions</h3>
+					<h3 class="fw-bold fs-4 mb-0">Data Distribution</h3>
 					<p class="text-muted mb-0 small fs-6">Distribution of evaluated questions across each model</p>
 				</div>
 				<div>
@@ -262,7 +262,7 @@
 			<div class="row">
 				{% for histogram in histograms %}
 					<!-- Histograms -->
-					<div class="col-6 text-center">
+					<div class="col-12 col-md-6 text-center pb-3">
 						<h4 class="fw-bold mb-0">{{ histogram.model_used.title }}</h4>
 						<p class="text-muted small fs-6">Last update: {{ histogram.created_at }}</p>
 						<img src="{{ histogram.chart_image.url }}" alt="Histogram" style="max-width: 100%; height: auto;">

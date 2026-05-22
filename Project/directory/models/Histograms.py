@@ -1,5 +1,7 @@
 import os
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 from django.conf import settings
 User = settings.AUTH_USER_MODEL
@@ -8,7 +10,7 @@ from directory.models import TrainedModel
 
 
 def histograms_file_path(instance, filename):
-	return os.path.join("users", f"{instance.user.id}", filename)
+	return os.path.join("users", f"{instance.user.id}", "Histograms", filename)
 #def 
 
 
@@ -25,3 +27,15 @@ class Histogram(models.Model):
 	#def 
 	
 #class
+
+
+
+# Makes sure image is deleted when object is deleted (even on bulk-delete)
+@receiver(post_delete, sender=Histogram)
+def delete_image(sender, instance, **kwargs):
+	if instance.chart_image:
+		if os.path.isfile(instance.chart_image.path):
+			os.remove(instance.chart_image.path)
+		#if
+	#if
+#def

@@ -57,6 +57,7 @@ def data_preparation(questions_info, parameter):
 	#if
 	
 	
+	
 	def prepare_questions_list(qs):
 		# Helper to map QuerySet objects to the required DataFrame format 
 		data = []
@@ -91,12 +92,6 @@ def data_preparation(questions_info, parameter):
 	train_qs = [q for q in questions_info if q.context.id in train_context_ids]
 	test_qs = [q for q in questions_info if q.context.id not in train_context_ids]
 	
-	"""
-	print(f"[INFO] Number training contexts: {n_train}")
-	print(f"[INFO] Length (n questions) of train_df: {len(train_qs)}")
-	print(f"[INFO] Length (n questions) of test_df: {len(test_qs)}")
-	"""
-	
 	# Convert to DataFrames
 	train_df = prepare_questions_list(train_qs)
 	test_df = prepare_questions_list(test_qs)
@@ -114,23 +109,24 @@ def data_preparation(questions_info, parameter):
 # Obtain the max and min values of the latent-trait
 def get_range(questions_info, parameter):
 	
-	# Aggregate min and max directly from the database
-	if parameter== 'difficulty': # Difficulty
-		result = questions_info.aggregate(
-			min_diff=Min('question_difficulty'),
-			max_diff=Max('question_difficulty')
-		)
-	elif parameter== 'discrimination': # Discrimination
-		result = questions_info.aggregate(
-			min_diff=Min('question_discrimination'),
-			max_diff=Max('question_discrimination')
-		)
-	elif parameter== 'facility': # Facility
-		result = questions_info.aggregate(
-			min_diff=Min('question_facility'),
-			max_diff=Max('question_facility')
-		)
-	#elif
+	param_config = {
+		'difficulty': {
+			"attribute": 'question_difficulty'
+		},
+		'discrimination': {
+			"attribute": 'question_discrimination'
+		},
+		'facility': {
+			"attribute": 'question_facility'
+		},
+	}
+	
+	config = param_config.get(parameter)
+	
+	result = questions_info.aggregate(
+		min_diff=Min(config["attribute"]),
+		max_diff=Max(config["attribute"])
+	)
 	
 	# Cast to float in case the database field is a Decimal or string
 	min_val = float(result['min_diff']) if result['min_diff'] is not None else 0.0
@@ -198,42 +194,28 @@ def train_model(questions_info, parameter):
 	
 	
 	# Picking the AI module we want to train based on the parameter
+	param_config = {
+		'difficulty': {
+			"LATENT-TRAIT": DIFFICULTY
+		},
+		'discrimination': {
+			"LATENT-TRAIT": DISCRIMINATION
+		},
+		'facility': {
+			"LATENT-TRAIT": FACILITY
+		},
+	}
 	
-	# Parameters: 
-	# 1: Question Difficulty
-	# 2: Question Discrimination
-	# 3: Question Facility
+	config = param_config.get(parameter)
 	
-	# Create the wrongness dictionary
-	if parameter== 'difficulty': # Difficulty
-		estimator_from_text = FeatureEngAndRegressionEstimatorFromText(
-			{
-				DIFFICULTY: FeatureEngAndRegressionPipeline(
-					FeatureEngineeringModule([ReadabilityFeaturesComponent(), LinguisticFeaturesComponent()]),
-					RegressionModule([SklearnRegressionComponent(RandomForestRegressor(random_state=42), latent_trait_range=(min_val, max_val))])
-				)
-			}
-		)
-	elif parameter== 'discrimination': # Discrimination
-		estimator_from_text = FeatureEngAndRegressionEstimatorFromText(
-			{
-				DISCRIMINATION: FeatureEngAndRegressionPipeline(
-					FeatureEngineeringModule([ReadabilityFeaturesComponent(), LinguisticFeaturesComponent()]),
-					RegressionModule([SklearnRegressionComponent(RandomForestRegressor(random_state=42), latent_trait_range=(min_val, max_val))])
-				)
-			}
-		)
-	elif parameter== 'facility': # Facility
-		estimator_from_text = FeatureEngAndRegressionEstimatorFromText(
-			{
-				FACILITY: FeatureEngAndRegressionPipeline(
-					FeatureEngineeringModule([ReadabilityFeaturesComponent(), LinguisticFeaturesComponent()]),
-					RegressionModule([SklearnRegressionComponent(RandomForestRegressor(random_state=42), latent_trait_range=(min_val, max_val))])
-				)
-			}
-		)
-	#if
-	
+	estimator_from_text = FeatureEngAndRegressionEstimatorFromText(
+		{
+			config["LATENT-TRAIT"]: FeatureEngAndRegressionPipeline(
+				FeatureEngineeringModule([ReadabilityFeaturesComponent(), LinguisticFeaturesComponent()]),
+				RegressionModule([SklearnRegressionComponent(RandomForestRegressor(random_state=42), latent_trait_range=(min_val, max_val))])
+			)
+		}
+	)
 	
 	
 	# The text2props model is made of a latent_traits_calibrator + estimator_from_text pair.

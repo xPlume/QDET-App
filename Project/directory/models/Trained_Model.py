@@ -2,13 +2,16 @@ from django.db import models
 import os
 import uuid
 
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+
 from directory.parameters import ParameterChoices
 from django.conf import settings
 User = settings.AUTH_USER_MODEL
 
 
 def pickle_file_path(instance, filename):
-	return os.path.join("users", f"{instance.uploader.id}", filename)
+	return os.path.join("users", f"{instance.uploader.id}", "Pickle", filename)
 #def 
 
 
@@ -30,13 +33,15 @@ class TrainedModel(models.Model):
 		return f"{self.title} - {self.id}"
 	#def
 	
-	
-	# When deleting model reference, delete pickle from media folder 
-	def delete(self, *args, **kwargs):
-		if self.pickle_file and os.path.isfile(self.pickle_file.path):
-			os.remove(self.pickle_file.path)
-		#if
-		super().delete(*args, **kwargs)
-	#def
-	
 #class
+
+
+# Makes sure pickle file is deleted when object is deleted (even on bulk-delete)
+@receiver(post_delete, sender=TrainedModel)
+def delete_image(sender, instance, **kwargs):
+	if instance.pickle_file:
+		if os.path.isfile(instance.pickle_file.path):
+			os.remove(instance.pickle_file.path)
+		#if
+	#if
+#def
