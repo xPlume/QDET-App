@@ -74,10 +74,19 @@
 		
 		<div class="container">
 			
-			<div class="result-card">
-				<h3>Calculation Results:</h3>
-				<p>{{ model_results }}</p>
-			</div>
+			<fieldset class="border-fieldset shadow-sm border-secondary-subtle">
+				<legend>Calculation Results</legend>
+				
+				{% for category, metrics in model_results.items %}
+					<p class="text-muted mb-0 small fs-6 ps-4">Latent Trait</p>
+					<h4 class="ps-4 mb-3">{{ category }}</h4>
+					<ul>
+						{% for metric_name, value in metrics.items %}
+							<li><strong>{{ metric_name }}:</strong> {{ value|floatformat:4 }}</li>
+						{% endfor %}
+					</ul>
+				{% endfor %}
+			</fieldset>
 			
 			
 			

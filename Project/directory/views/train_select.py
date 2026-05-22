@@ -48,6 +48,22 @@ def train_select(request):
 				parameter = train_form.cleaned_data['parameter']
 				
 				
+				param_config = {
+					'difficulty': 'question_difficulty__isnull',
+					'discrimination': 'question_discrimination__isnull',
+					'facility': 'question_facility__isnull',
+				}
+				lookup_field = param_config.get(parameter)
+				
+				dynamic_filter = {lookup_field: False}
+				
+				questions_info = Question.objects.filter(
+					uploader=user,
+					**dynamic_filter, # question_[laten-trait]__isnull = False
+				).select_related('context').prefetch_related('answers').order_by('-id')
+				
+				
+				"""
 				# Fetching questions with their context and all related answers
 				if parameter== 'difficulty': # Difficulty
 					questions_info = Question.objects.filter(
@@ -67,7 +83,7 @@ def train_select(request):
 						question_facility__isnull=False,
 					).select_related('context').prefetch_related('answers').order_by('-id')
 				#if
-				
+				"""
 				
 				"""
 				# Example on how to use the question object
@@ -130,7 +146,7 @@ def train_select(request):
 					del request.session['temporary_parameter']
 					
 					messages.success(request, "The model was saved with success", extra_tags="success")
-					return redirect('user_questions')
+					return redirect('index')
 				#if 
 				else:
 					messages.error(request, "Training session expired or model not found. Please train again.", extra_tags="danger")

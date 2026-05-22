@@ -279,6 +279,23 @@
 
 
 
+.border-fieldset {
+	border: 1px solid;
+	padding: 1.5rem;
+	border-radius: 0.25rem;
+}
+
+.border-fieldset legend {
+	float: none;
+	width: auto;
+	padding: 0 0.5rem;
+	margin-bottom: 0;
+	font-size: 1.5rem;
+	font-weight: 700;
+}
+
+
+
 /*** Section Title ***/
 .section-title {
     position: relative;

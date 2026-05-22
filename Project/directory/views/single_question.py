@@ -1,6 +1,7 @@
 # Django imports
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # References to other files
 from directory.models import Context, Question, Answer, TrainedModel
@@ -44,6 +45,8 @@ def single_question(request, question_id):
 			evaluate(questions_info, model_instance, user)
 		#for
 		
+		messages.success(request, "The evalutaion was exectued with success", extra_tags="success")
+		return redirect('single_question', question_id)
 		
 	#if
 	
