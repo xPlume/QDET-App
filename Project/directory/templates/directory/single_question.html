@@ -33,6 +33,27 @@
 
 
 {% block content %}
+
+
+<style>
+	.border-fieldset {
+		border: 1px solid #adb5bd; /* Bootstrap's gray-500 */
+		padding: 1.5rem;
+		border-radius: 0.25rem;
+	}
+	
+	.border-fieldset legend {
+		float: none;
+		width: auto;
+		padding: 0 0.5rem;
+		margin-bottom: 0;
+		font-size: 1.5rem;
+		font-weight: 700;
+	}
+  </style>
+
+
+
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-lg-10 col-xl-8">
@@ -91,20 +112,64 @@
                         </div>
                     </div>
 					
+					<div class="my-4">
+						<hr>
+					</div>
 					
-					<h5 class="mt-4">Question difficulty: {{ question.question_difficulty|default_if_none:'--' }}</h5>
-					<h5 class="mt-4">Question discrimination: {{ question.question_discrimination|default_if_none:'--' }}</h5>
-					<h5 class="mt-4">Question facility: {{ question.question_facility|default_if_none:'--' }}</h5>
+					
+					<!-- Difficulty - Discrimination - Facility -->
+					<div class="row">
+						
+						<!-- Difficulty -->
+						<div class="col-4 py-2">
+							<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
+								<div class="d-flex align-items-center gap-4">
+									<div>
+										<!-- Text -->
+										<p class="text-muted mb-0 small fs-6">Difficulty</p>
+										<h2 class="fw-bold mt-1">{{ question.question_difficulty|default_if_none:'--' }}</h2>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Questions -->
+						<div class="col-4 py-2">
+							<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
+								<div class="d-flex align-items-center gap-4">
+									<div>
+										<!-- Text -->
+										<p class="text-muted mb-0 small fs-6">Discrimination</p>
+										<h2 class="fw-bold mt-1">{{ question.question_discrimination|default_if_none:'--' }}</h2>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Context -->
+						<div class="col-4 py-2">
+							<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
+								<div class="d-flex align-items-center gap-4">
+									<div>
+										<!-- Text -->
+										<p class="text-muted mb-0 small fs-6">Facility</p>
+										<h2 class="fw-bold mt-1">{{ question.question_facility|default_if_none:'--' }}</h2>
+									</div>
+								</div>
+							</div>
+						</div>
+					
+					</div>
+					
+					
+					<!-- Update Question -->
+					<div class="d-flex justify-content-center mt-4">
+						<a href="{% url 'update_question' question.id %}">
+							<button type="button" class="btn btn-lg btn-outline-primary">Update question</button>
+						</a>
+					</div>
 					
 				</div>
-				
-				<!-- Update Question -->
-				<div class="d-flex justify-content-center">
-					<a href="{% url 'update_question' question.id %}">
-						<button type="button" class="btn btn-lg btn-outline-primary mb-5">Update question</button>
-					</a>
-				</div>
-				
 				
             </div>
 			
@@ -114,32 +179,31 @@
 			
 			<form method="POST" enctype="multipart/form-data">
 			{% csrf_token %}
-				
-				<legend class="mt-5">Evaluate this question</legend>
-				
-				<!-- Select models -->
-				<div class="mt-5 mb-4">
-					{% for model in existing_models %}
-						<div class="form-check">
-							<input class="form-check-input" 
+			
+				<!-- Evaluate question -->
+				<div class="container mt-5">
+					<fieldset class="border-fieldset">
+						<legend>Evaluate this question</legend>
+						
+						{% for model in existing_models %}
+							<div class="form-check mb-2">
+								<input class="form-check-input" 
 								   type="checkbox" 
 								   name="selected_ids" 
 								   id="check_{{ model.id }}" 
 								   value="{{ model.id }}">
-							<label class="form-check-label" for="check_{{ model.id }}">
-								[{{ model.get_parameter_display }}] {{ model.title }}
-							</label>
-						</div>
-					{% endfor %}
-				</div>
-				
-				
-				<!-- Evaluate question -->
-				<div class="mb-3">
-					<button type="submit" class="btn btn-lg btn-outline-success">Evaluate</button>
+								<label class="form-check-label" for="cambridgeIrtV3Diff">
+									<strong>[{{ model.get_parameter_display }}]</strong> {{ model.title }}
+								</label>
+							</div>
+						{% endfor %}
+						
+						<!-- Submit button -->
+						<button type="submit" class="btn btn-lg btn-outline-success mt-3">Evaluate</button>
+						
+					</fieldset>
 				</div>
 			</form>
-			
 			
 			
         </div>
