@@ -48,9 +48,29 @@
 				<label for="exampleSelect1" class="form-label"></label>
 				<select name="param_selection" class="form-select form-select-lg" id="param_id">
 					<option value="">----------------</option>
-					{% for model in existing_models %}
-						<option value="{{ model.id }}">[{{ model.get_parameter_display }}] {{ model.title }}</option>
-					{% endfor %}
+					
+					<!-- Group 1: User's Own Models -->
+					{% if user_models %}
+						<optgroup label="My Models">
+							{% for model in user_models %}
+								{% if model.public is True %}
+									<option value="{{ model.id }}">[{{ model.get_parameter_display }}] {{ model.title }} -- PUBLIC MODEL</option>
+								{% else %}
+									<option value="{{ model.id }}">[{{ model.get_parameter_display }}] {{ model.title }}</option>
+								{% endif %}
+							{% endfor %}
+						</optgroup>
+					{% endif %}
+					
+					<!-- Group 2: Public Models -->
+					{% if public_models %}
+						<optgroup label="Public Models">
+							{% for model in public_models %}
+								<option value="{{ model.id }}" class="text-secondary">[{{ model.get_parameter_display }}] {{ model.title }}</option>
+							{% endfor %}
+						</optgroup>
+					{% endif %}
+					
 				</select>
 			</div>
 			
