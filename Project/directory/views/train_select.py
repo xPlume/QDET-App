@@ -6,7 +6,9 @@ from django.contrib.auth.decorators import login_required
 # References to other files
 from directory.models import Question
 from directory.forms import TrainModelForm, SaveTrainedModelForm
-from modules.train_model import train_model, save_trained_model_to_db
+from modules.train_model import train_model
+from modules.latent_trait_dictionary import latent_trait_dictionary
+from modules.save_model import save_model
 
 # Others
 from types import SimpleNamespace
@@ -38,7 +40,7 @@ def train_select(request):
 		train_form = TrainModelForm(request.POST)
 		save_form = SaveTrainedModelForm(request.POST)
 		
-		
+		# --- Training the model 
 		if 'train_model' in request.POST:
 			
 			
@@ -48,42 +50,18 @@ def train_select(request):
 				parameter = train_form.cleaned_data['parameter']
 				
 				
-				param_config = {
-					'difficulty': 'question_difficulty__isnull',
-					'discrimination': 'question_discrimination__isnull',
-					'facility': 'question_facility__isnull',
-				}
-				lookup_field = param_config.get(parameter)
+				# Obtaining the latent-trait dictionary
+				param_config = latent_trait_dictionary()
 				
+				# Setting up the proper field of the dictionary
+				config = param_config.get(parameter)
+				lookup_field = config["query"]
 				dynamic_filter = {lookup_field: False}
 				
 				questions_info = Question.objects.filter(
 					uploader=user,
 					**dynamic_filter, # question_[laten-trait]__isnull = False
 				).select_related('context').prefetch_related('answers').order_by('-id')
-				
-				
-				"""
-				# Fetching questions with their context and all related answers
-				if parameter== 'difficulty': # Difficulty
-					questions_info = Question.objects.filter(
-						uploader=user,
-						question_difficulty__isnull=False,
-					).select_related('context').prefetch_related('answers').order_by('-id')
-					
-				elif parameter== 'discrimination': # Discrimination
-					questions_info = Question.objects.filter(
-						uploader=user,
-						question_discrimination__isnull=False,
-					).select_related('context').prefetch_related('answers').order_by('-id')
-					
-				elif parameter== 'facility': # Facility
-					questions_info = Question.objects.filter(
-						uploader=user,
-						question_facility__isnull=False,
-					).select_related('context').prefetch_related('answers').order_by('-id')
-				#if
-				"""
 				
 				"""
 				# Example on how to use the question object
@@ -118,6 +96,8 @@ def train_select(request):
 		#if
 		
 		
+		
+		# --- Saving a model
 		elif 'save_model' in request.POST:
 			
 			if save_form.is_valid():
@@ -139,7 +119,7 @@ def train_select(request):
 					)
 					
 					# Saving the model as pickle file and db object
-					save_trained_model_to_db(text2props_model, object_info)
+					save_model(text2props_model, object_info)
 					
 					# Clean up session memory now that it's safe in the permanent DB
 					del request.session['temporary_trained_model']

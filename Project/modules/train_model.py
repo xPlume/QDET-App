@@ -1,15 +1,11 @@
 # Libraries imports
 import pandas as pd
-import pickle
-import io
 import random
 from sklearn.ensemble import RandomForestRegressor
 
 # Text2Props imports
 from text2props.text2props.model import Text2PropsModel
 from text2props.text2props.modules.latent_traits_calibration import KnownParametersCalibrator
-#from text2props.text2props.modules.estimators_from_text import MajorityEstimatorFromText
-
 from text2props.text2props.modules.estimators_from_text import (
     FeatureEngAndRegressionPipeline,
     FeatureEngAndRegressionEstimatorFromText,
@@ -18,44 +14,30 @@ from text2props.text2props.modules.feature_engineering import FeatureEngineering
 from text2props.text2props.modules.feature_engineering.components import LinguisticFeaturesComponent, ReadabilityFeaturesComponent
 from text2props.text2props.modules.regression import RegressionModule
 from text2props.text2props.modules.regression.components import SklearnRegressionComponent
-
-
-from text2props.text2props.constants import QUESTION_DF_COLS, Q_ID, Q_TEXT, CORRECT_TEXTS, WRONG_TEXTS, DIFFICULTY, DISCRIMINATION, FACILITY
+from text2props.text2props.constants import QUESTION_DF_COLS, Q_ID, Q_TEXT, CORRECT_TEXTS, WRONG_TEXTS
 
 # Django imports
-from django.core.files.base import ContentFile
-from directory.models import TrainedModel
 from django.db.models import Max, Min
 
-
+# Referencing other files
+from modules.latent_trait_dictionary import latent_trait_dictionary
 
 
 def data_preparation(questions_info, parameter):
     
-	# Create the wrongness dictionary
-	if parameter == 'difficulty': # Difficulty
-		wrongness_dictionary = {
-			DIFFICULTY: {
-				q.id: float(q.question_difficulty)
-				for q in questions_info
-			}
-		}
-	elif parameter == 'discrimination': # Discrimination
-		wrongness_dictionary = {
-			DISCRIMINATION: {
-				q.id: float(q.question_discrimination)
-				for q in questions_info
-			}
-		}
-	elif parameter == 'facility': # Facility
-		wrongness_dictionary = {
-			FACILITY: {
-				q.id: float(q.question_facility)
-				for q in questions_info
-			}
-		}
-	#if
+	# Obtaining the dictionary
+	param_config = latent_trait_dictionary()
 	
+	config = param_config.get(parameter)
+	latent_trait = config["LATENT-TRAIT"]
+	attribute = config["attribute"]
+	
+	wrongness_dictionary = {
+		latent_trait: {
+			q.id: float(getattr(q, attribute) or 0.0) # q.id: float(q.question_[latent-trait])
+			for q in questions_info
+		}
+	}
 	
 	
 	def prepare_questions_list(qs):
@@ -109,18 +91,10 @@ def data_preparation(questions_info, parameter):
 # Obtain the max and min values of the latent-trait
 def get_range(questions_info, parameter):
 	
-	param_config = {
-		'difficulty': {
-			"attribute": 'question_difficulty'
-		},
-		'discrimination': {
-			"attribute": 'question_discrimination'
-		},
-		'facility': {
-			"attribute": 'question_facility'
-		},
-	}
+	# Obtaining the dictionary
+	param_config = latent_trait_dictionary()
 	
+	# Focusing on the attributes of the proper parameter
 	config = param_config.get(parameter)
 	
 	result = questions_info.aggregate(
@@ -138,74 +112,23 @@ def get_range(questions_info, parameter):
 
 
 
-
-# Saving the pickle file and creating an object in the DB to link it to a user
-def save_trained_model_to_db(text2props_model, object_info):
-	
-	# Create an in-memory byte stream
-	buffer = io.BytesIO()
-	
-	# Pickle the model into the buffer
-	pickle.dump(text2props_model, buffer)
-	
-	
-	# Create the Django Model instance
-	new_model_record = TrainedModel(
-		title=object_info.title,
-		public=object_info.public,
-		uploader=object_info.uploader,
-		parameter=object_info.parameter,
-	)
-	
-	# Construct a unique filename using the UUID
-	# We use the instance's pre-generated UUID for the filename
-	filename = f"{new_model_record.id}.pkl"
-	
-	# Safely extracts the raw bytes directly from the memory buffer
-	binary_data = buffer.getvalue()
-	
-	# Save the buffer content to the FileField
-	new_model_record.pickle_file.save(filename, ContentFile(binary_data), save=True)
-	
-	# Clean up the buffer
-	buffer.close()
-	
-#def 
-
-
-
-
 def train_model(questions_info, parameter):
 	
 	# Preparing the data
-	# All questions are send as Training
-	#known_latent_traits, df_train = data_preparation(questions_info, parameter)
 	known_latent_traits, df_train, df_test = data_preparation(questions_info, parameter)
 	
 	
 	# Define the "calibrator".
-	#   This is the object that looks at the students responses and measures the "true" values for the latent traits.
-	#   In this case, we already know the latent traits (available in the dataset).
+	# This is the object that looks at the students responses and measures the "true" values for the latent traits.
+	# In this case, we already know the latent traits (available in the dataset).
 	latent_traits_calibrator = KnownParametersCalibrator(latent_traits=known_latent_traits)
 	
 	
 	# Obtaining max and min values of the latent-trait
 	min_val, max_val = get_range(questions_info, parameter)
 	
-	
-	# Picking the AI module we want to train based on the parameter
-	param_config = {
-		'difficulty': {
-			"LATENT-TRAIT": DIFFICULTY
-		},
-		'discrimination': {
-			"LATENT-TRAIT": DISCRIMINATION
-		},
-		'facility': {
-			"LATENT-TRAIT": FACILITY
-		},
-	}
-	
+	# Obtaining the latent-trait dictionary
+	param_config = latent_trait_dictionary()
 	config = param_config.get(parameter)
 	
 	estimator_from_text = FeatureEngAndRegressionEstimatorFromText(
@@ -223,10 +146,6 @@ def train_model(questions_info, parameter):
 	
 	# Train the text2props_model
 	text2props_model.train(df_train=df_train)
-	
-	
-	# Saving the tained model as a pickle file, with an object in the DB
-	#new_model_record = save_trained_model_to_db(text2props_model, object_info)
 	
 	
 	# perform predictions
