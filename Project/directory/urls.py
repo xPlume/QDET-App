@@ -13,6 +13,7 @@ urlpatterns = [
 	path("questions/", views.user_questions, name="user_questions"),
 	path("questions/<int:question_id>", views.single_question, name="single_question"),
 	path("questions/<int:question_id>/update", views.update_question, name="update_question"),
+	path("questions/<int:question_id>/delete", views.delete_question, name="delete_question"),
 	path("train_select/", views.train_select, name="train_select"),
 	path("evaluate/", views.evaluate_select, name="evaluate_select"),
 	

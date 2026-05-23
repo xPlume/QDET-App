@@ -233,6 +233,32 @@
 	</form>
 	
 	
+	<div class="container border-bottom my-3"></div>
+	
+	<!-- Delete question button -->
+	<div class="d-flex justify-content-end">
+		<a href="#" class="text-danger" onclick="confirmDelete(event)">
+			<button type="button" class="btn btn-lg btn-outline-danger m-5 ">Delete this question</button>
+		</a>
+	</div>
+	
+	<!-- Delete question form -->
+	<form id="delete-question-form" method="post" action="{% url 'delete_question' question.id %}" style="display: none;">
+		{% csrf_token %}
+	</form>
+	
+	<!-- Delete question JS -->
+	<script>
+		function confirmDelete(event) {
+			event.preventDefault(); // Stop the link from jumping
+			if (confirm("Are you sure you want to delete this question? This cannot be undone.")) {
+				document.getElementById('delete-question-form').submit();
+			}
+		}
+	</script>
+	
+	
+	
 	
 	
 	<!-- JavaScript to handle adding forms and delition -->

@@ -5,5 +5,6 @@ from .upload_csv import upload_csv
 from .user_questions import user_questions
 from .single_question import single_question
 from .update_question import update_question
+from .delete_question import delete_question
 from .train_select import train_select
 from .evaluate_select import evaluate_select

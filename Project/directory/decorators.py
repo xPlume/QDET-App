@@ -7,9 +7,8 @@ from directory.models import Question
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-from django.utils.translation import gettext_lazy as _
 
-# Making sure only book owners can access certain views
+# Making sure only the content owners can access certain views
 def question_creator(function):
 	
 	@wraps(function)
