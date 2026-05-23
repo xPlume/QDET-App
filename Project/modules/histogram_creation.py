@@ -1,8 +1,13 @@
+# Libraries
 import io
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+
+# Django imports
 from django.core.files.base import ContentFile
+
+# References to other files
 from directory.models import Histogram, Prediction
 
 

@@ -6,7 +6,7 @@ from django.contrib import messages
 # References to other files
 from directory.models import Context, Question, Answer, TrainedModel
 from directory.decorators import question_creator
-from directory.evaluate import evaluate
+from modules.evaluate import evaluate
 
 
 @login_required

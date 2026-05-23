@@ -4,9 +4,9 @@ from django.db.models import Prefetch
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-# Referece to other files
+# Reference to other files
 from directory.models import Question, TrainedModel
-from directory.evaluate import evaluate
+from modules.evaluate import evaluate
 
 
 @login_required

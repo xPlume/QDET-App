@@ -5,7 +5,7 @@ import uuid
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
-from directory.parameters import ParameterChoices
+from directory.utils import ParameterChoices
 from django.conf import settings
 User = settings.AUTH_USER_MODEL
 

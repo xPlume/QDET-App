@@ -12,7 +12,7 @@ from django.db.models import Q
 
 # Reference to other files
 from directory.models import Prediction, Question
-from directory.histogram_creation import create_histogram
+from modules.histogram_creation import create_histogram
 
 
 # Taking all the questions, and setting the proper format for the Test 

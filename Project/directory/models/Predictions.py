@@ -1,7 +1,7 @@
 from django.db import models
 
 from directory.models import Question, TrainedModel
-from directory.parameters import ParameterChoices
+from directory.utils import ParameterChoices
 from django.conf import settings
 User = settings.AUTH_USER_MODEL
 

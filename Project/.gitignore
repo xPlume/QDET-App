@@ -1,4 +1,5 @@
 Project/__pycache__
+modules/__pycache__
 db.sqlite3
 venv/
 media/

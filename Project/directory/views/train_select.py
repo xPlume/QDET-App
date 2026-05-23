@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 # References to other files
 from directory.models import Question
 from directory.forms import TrainModelForm, SaveTrainedModelForm
-from directory.train_model import train_model, save_trained_model_to_db
+from modules.train_model import train_model, save_trained_model_to_db
 
 # Others
 from types import SimpleNamespace
