@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block head_block %}
+	
+	<meta name="description" content="">
+	
+{% endblock %}
+
+
+
+{% block header %}
+	
+	<!-- Hero Header -->
+	<section>
+	<div class="py-5 bg-dark hero-header mb-5">
+		<img src="{% static 'img/bg-hero.webp' %}" alt="Hero background" fetchpriority="high">
+		<div class="container hero-content text-center my-2 pt-5 pb-4">
+			<h1 class="display-3 text-white mb-3 roboto-font">Dashboard</h1>
+			<p class="container col-lg-8 lead mb-2 pb-3">All your information, summarized in one place.</p>
+			<a href="{% url 'login' %}" class="btn btn-lg btn-primary py-sm-3 px-sm-5 me-3">Login</a>
+		</div>
+	</div>
+	</section>
+	
+	
+{% endblock %}
+
+
+
+
+{% block content %}
+	
+	<style>
+	/* Card base transition */
+	.custom-mcq-card .transition-all {
+		transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+	}
+	
+	/* Arrow base transition */
+	.custom-mcq-card .arrow-icon {
+		transition: transform 0.3s ease;
+	}
+	
+	/* Hover effects */
+	.custom-mcq-card:hover .transition-all {
+		transform: translateY(-4px) scale(1.01);
+		box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+		border-color: var(--bs-primary) !important;
+	}
+	
+	/* Nudge the arrow slightly to the right on hover */
+	.custom-mcq-card:hover .arrow-icon {
+		transform: translateX(5px);
+	}
+	</style>
+	
+	
+	<div class="container-lg">
+		
+		
+		<!-- Navigation buttons -->
+		<section>
+		<div class="row">
+			
+			<!-- Create new MCQ -->
+			<div class="col-12 col-md-6 py-2">
+				<a href="{% url 'new_context' %}" class="text-decoration-none custom-mcq-card" style="text-decoration: none; color: inherit;">
+					<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm transition-all">
+						
+						<div class="d-flex align-items-center gap-4">
+							<!-- Icon -->
+							<div class="flex-shrink-0 bg-primary rounded-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+								<i class="fa fa-2x fa-circle-plus text-white"></i>
+							</div>
+							
+							<!-- Text -->
+							<div>
+								<h4 class="fw-bold mb-1 fs-5">Create New MCQ</h4>
+								<p class="text-muted mb-0 small fs-6">Add a context + question + answers</p>
+							</div>
+						</div>
+						
+						<div class="pe-2 arrow-icon">
+							<h4> → </h4>
+						</div>
+						
+					</div>
+				</a>
+			</div>
+			
+			
+			<!-- Bulk import -->
+			<div class="col-12 col-md-6 py-2">
+				<a href="{% url 'upload_csv' %}" class="text-decoration-none custom-mcq-card" style="text-decoration: none; color: inherit;">
+					<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm transition-all">
+						
+						<div class="d-flex align-items-center gap-4">
+							<!-- Icon -->
+							<div class="flex-shrink-0 bg-primary rounded-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+								<i class="fa fa-2x fa-file-csv text-white"></i>
+							</div>
+							
+							<!-- Text -->
+							<div>
+								<h4 class="fw-bold mb-1 fs-5">Bulk Import</h4>
+								<p class="text-muted mb-0 small fs-6">Upload of CSV of contexts and questions</p>
+							</div>
+						</div>
+						
+						<div class="pe-2 arrow-icon">
+							<h4> → </h4>
+						</div>
+						
+					</div>
+				</a>
+			</div>
+			
+			
+			
+			<!-- Train a model -->
+			<div class="col-12 col-md-6 py-2">
+				<a href="{% url 'train_select' %}" class="text-decoration-none custom-mcq-card" style="text-decoration: none; color: inherit;">
+					<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm transition-all">
+						
+						<div class="d-flex align-items-center gap-4">
+							<!-- Icon -->
+							<div class="flex-shrink-0 bg-success rounded-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+								<i class="fa fa-2x fa-graduation-cap text-white"></i>
+							</div>
+							
+							<!-- Text -->
+							<div>
+								<h4 class="fw-bold mb-1 fs-5">Train a model</h4>
+								<p class="text-muted mb-0 small fs-6">Difficulty - Discrimination - Facility</p>
+							</div>
+						</div>
+						
+						<div class="pe-2 arrow-icon">
+							<h4> → </h4>
+						</div>
+						
+					</div>
+				</a>
+			</div>
+			
+			
+			<!-- Evaluate Questions -->
+			<div class="col-12 col-md-6 py-2">
+				<a href="{% url 'evaluate_select' %}" class="text-decoration-none custom-mcq-card" style="text-decoration: none; color: inherit;">
+					<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm transition-all">
+						
+						<div class="d-flex align-items-center gap-4">
+							<!-- Icon -->
+							<div class="flex-shrink-0 bg-success rounded-4 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+								<i class="fa fa-2x fa-chart-line text-white"></i>
+							</div>
+							
+							<!-- Text -->
+							<div>
+								<h4 class="fw-bold mb-1 fs-5">Evaluate Questions</h4>
+								<p class="text-muted mb-0 small fs-6">Run a trained model over your MCQs</p>
+							</div>
+						</div>
+						
+						<div class="pe-2 arrow-icon">
+							<h4> → </h4>
+						</div>
+						
+					</div>
+				</a>
+			</div>
+			
+		</div>
+		</section>
+		
+		
+		
+		
+		
+		<section>
+			
+			<!-- Title -->
+			<div class="mt-5">
+				<div>
+					<h3 class="fw-bold fs-4 mb-0">Looking for more information?</h3>
+					<p class="text-muted mb-0 small fs-6">Login or Register to unlock every feature</p>
+				</div>
+			</div>
+			
+			<div class="row mt-3 pb-4">
+				<div class="container">
+					<a href="{% url 'login' %}" class="btn btn-lg btn-outline-primary py-sm-3 px-sm-5 me-3">Login</a>
+					<a href="{% url 'register' %}" class="btn btn-lg btn-outline-success py-sm-3 px-sm-5 me-3">Register</a>
+				</div>
+			</div>
+			
+		</section>
+		
+		
+		
+		
+		<!-- Bottom margin -->
+		<div class="py-4"></div>
+		
+	</div>
+	
+{% endblock %}

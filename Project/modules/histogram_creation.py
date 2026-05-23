@@ -23,7 +23,6 @@ def create_histogram(model_used, user):
 		model_used=model_used
 	).values_list('value', flat=True)
 	
-	model_title = f"[{model_used.parameter.replace(' ', '_')}] {model_used.title.replace(' ', '_')}"
 	
 	# Converting the database values into floats
 	float_data = [float(val) for val in decimal_values if val is not None]
@@ -137,6 +136,7 @@ def create_histogram(model_used, user):
 	)
 	
 	# Saving the histogram as an image
+	model_title = f"[{model_used.parameter.replace(' ', '_')}] {model_used.title.replace(' ', '_')}"
 	filename = f"histogram_{model_title}.png"
 	chart_instance.chart_image.save(filename, ContentFile(buffer.getvalue()), save=True)
 	

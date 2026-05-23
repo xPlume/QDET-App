@@ -16,15 +16,9 @@
 	<section>
 	<div class="py-5 bg-dark hero-header mb-5">
 		<img src="{% static 'img/bg-hero.webp' %}" alt="Hero background" fetchpriority="high">
-		<div class="container hero-content text-center my-5 pt-2 pb-4">
-			<h1 class="display-3 text-white mt-5 mb-3 roboto-font roboto-regular">Test and validate your MCQs</h1>
-			<p class="container col-lg-8 text-white mb-4 pb-2">This web application offers an interface allowing you to use profesional testing modules for text-based MCQs.<br>Upload your MCQs and obtain numerical results based on extensive parameters, validating the effectiveness of your distractors.</p>
-			{% if user.is_authenticated %}
-				<a href="{% url 'new_context' %}" class="btn btn-lg btn-primary py-sm-3 px-sm-5 me-3 ">Create New MCQ</a>
-			{% else %}
-				<a href="{% url 'login' %}" class="btn btn-lg btn-primary py-sm-3 px-sm-5 me-3">Login</a>
-			{% endif %}
-			
+		<div class="container hero-content text-center my-2 pt-5 pb-4">
+			<h1 class="display-3 text-white mb-4 roboto-font">Dashboard</h1>
+			<p class="container col-lg-8 lead pt-3 mb-2 pb-2">All your information, summarized in one place.</p>
 		</div>
 	</div>
 	</section>
@@ -72,6 +66,7 @@
 		
 		
 		<!-- Navigation buttons -->
+		<section>
 		<div class="row">
 			
 			<!-- Create new MCQ -->
@@ -183,12 +178,14 @@
 			</div>
 			
 		</div>
+		</section>
 		
 		
 		
 		
 		
 		<!-- Info on Context - Questions - Trained model -->
+		<section>
 		<div class="row my-3">
 			
 			<!-- Context -->
@@ -234,6 +231,7 @@
 			</div>
 		
 		</div>
+		</section>
 		
 		
 		
@@ -242,6 +240,7 @@
 		
 		
 		<!-- Data Distributions -->
+		<section>
 		<div class="card border rounded-4 shadow-sm p-4 my-3">
 		
 			<!-- Title -->
@@ -271,6 +270,7 @@
 			</div>
 		
 		</div>
+		</section>
 		
 		
 		
@@ -280,6 +280,7 @@
 		
 		
 		<!-- Latest MCQs Table -->
+		<section>
 		<div class="card border rounded-4 shadow-sm p-4 my-3">
 		
 			<!-- Title -->
@@ -333,6 +334,7 @@
 			</table>
 			
 		</div>
+		</section>
 		
 		
 		

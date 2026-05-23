@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Context, Question, Answer, TopicNames, Topics, TrainedModel
+from .models import Context, Question, Answer, TrainedModel
 
 
 class ContextForm(forms.ModelForm):
@@ -58,27 +58,4 @@ class SaveTrainedModelForm(forms.Form):
 	title = forms.CharField(max_length=255)
 	public = forms.BooleanField(required=False)
 #class 
-
-
-class TopicsNamesForm(forms.ModelForm):
-	
-	class Meta:
-		model = TopicNames
-		fields = ['name']
-	#class Meta
-	
-#class
-
-
-class TopicsForm(forms.ModelForm):
-	
-	class Meta:
-		model = Topics
-		fields = []
-	#class Meta
-	
-#class
-
-
-
 

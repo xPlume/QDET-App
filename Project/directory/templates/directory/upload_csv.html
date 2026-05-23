@@ -16,12 +16,12 @@
 	<div class="py-5 bg-dark hero-header mb-5">
 		<img src="{% static 'img/bg-hero.webp' %}" alt="Hero background" fetchpriority="high">
 		<div class="container hero-content text-center my-2 pt-5 pb-4">
-			<h1 class="display-3 text-white mb-3 animated fadeInDown roboto-font">Upload CSV</h1>
+			<h1 class="display-3 text-white mb-3 roboto-font">Upload CSV</h1>
 			<nav aria-label="breadcrumb">
-			<ol class="breadcrumb justify-content-center">
-				<li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
-				<li class="breadcrumb-item text-white active" aria-current="page">Upload CSV</li>
-			</ol>
+				<ol class="breadcrumb justify-content-center">
+					<li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+					<li class="breadcrumb-item text-white active" aria-current="page">Upload CSV</li>
+				</ol>
 			</nav>
 		</div>
 	</div>
@@ -42,20 +42,6 @@
 		{% csrf_token %}
 		
 		<div class="container">
-			
-			
-			<!-- Select Topic -->
-			<legend class="">Set a topic (optional)</legend>
-			<div class="mb-5">
-				<label for="exampleSelect1" class="form-label"></label>
-				<select name="topic_selection" class="form-select form-select-lg" id="context_id">
-					<option value="0">----------------</option>
-					{% for topic in existing_topics %}
-						<option value="{{ topic.id }}">{{ topic.name }}</option>
-					{% endfor %}
-				</select>
-			</div>
-			
 			
 			
 			<legend class="mb-2">Bulk import through a .cvs file</legend>

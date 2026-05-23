@@ -6,6 +6,16 @@ from directory.models import Context, Question, TrainedModel, Histogram
 
 def index(request):
 	
+	# User not logged in
+	if not request.user.is_authenticated:
+		# return specific HTML document
+		template_name = "directory/index_not_logged_in.html"
+		context = {}
+		return render(request, template_name, context)
+	#if
+	
+	# else, user is logged in
+	
 	user = request.user
 	
 	nb_context = Context.objects.filter(
