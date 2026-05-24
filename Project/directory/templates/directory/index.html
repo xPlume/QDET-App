@@ -58,9 +58,45 @@
 	
 	<div class="container-lg">
 		
-		<!-- User name -->
-		<h6 class="lead mb-0">Welcome back</h6>
-		<h3 class="mb-4"><strong>{{ user.username }}</strong></h3>
+		
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<div>
+				<!-- User name -->
+				<h6 class="lead mb-0">Welcome back</h6>
+				<h3 class="mb-4"><strong>{{ user.username }}</strong></h3>
+			</div>
+			<div>
+				<!-- Admin panel button -->
+				{% if user.is_staff %}
+					<div class="row">
+						<div class="col-12 py-2">
+							<a href="{% url 'admin:index' %}" class="text-decoration-none custom-mcq-card" style="text-decoration: none; color: inherit;">
+								<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm transition-all">
+									
+									<div class="d-flex align-items-center gap-4">
+										<!-- Icon -->
+										<div class="flex-shrink-0 bg-primary rounded-4 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+											<i class="fa fa-2x fa-screwdriver-wrench text-white"></i>
+										</div>
+										
+										<!-- Text -->
+										<div>
+											<h4 class="fw-bold mb-1 fs-5">Admin Panel</h4>
+											<p class="text-muted mb-0 small fs-6 me-3">Access the site administration panel </p>
+										</div>
+									</div>
+									
+									<div class="pe-2 arrow-icon">
+										<h4> → </h4>
+									</div>
+									
+								</div>
+							</a>
+						</div>
+					</div>
+				{% endif %}
+			</div>
+		</div>
 		
 		
 		
