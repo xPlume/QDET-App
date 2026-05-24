@@ -20,7 +20,7 @@ class Histogram(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	
 	user = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
-	model_used = models.ForeignKey(TrainedModel, null=False, on_delete=models.CASCADE)
+	model_used = models.ForeignKey(TrainedModel, null=False, on_delete=models.CASCADE, related_name='histograms')
 	
 	def __str__(self):
 		return f"Histogram of {self.user.username}"

@@ -16,6 +16,8 @@ urlpatterns = [
 	path("questions/<int:question_id>/delete", views.delete_question, name="delete_question"),
 	path("train_select/", views.train_select, name="train_select"),
 	path("evaluate/", views.evaluate_select, name="evaluate_select"),
+	path("evaluations/", views.evaluations, name="evaluations"),
+	
 	
 	
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

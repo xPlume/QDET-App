@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block head_block %}
+	
+	<meta name="description" content="">
+	
+{% endblock %}
+
+
+
+{% block header %}
+	
+	<!-- Hero Header -->
+	<div class="py-5 bg-dark hero-header mb-5">
+		<img src="{% static 'img/bg-hero.webp' %}" alt="Hero background" fetchpriority="high">
+		<div class="container hero-content text-center my-2 pt-5 pb-4">
+			<h1 class="display-3 text-white mb-3 roboto-font">Evaluation Results</h1>
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb justify-content-center">
+					<li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+					<li class="breadcrumb-item text-white active" aria-current="page">Evaluations</li>
+				</ol>
+			</nav>
+		</div>
+	</div>
+	
+{% endblock %}
+
+
+
+
+{% block content %}
+	
+	<div class="container">
+		
+		
+		
+		<!-- Data Distributions -->
+		<section>
+		
+		
+		
+		{% for evaluation in evaluations %}
+			
+			<div id="{{ evaluation.id }}"></div>
+			
+			<!-- Title -->
+			{% for statistic in evaluation.statistics.all %}
+				<div class="col-12 text-center pb-3">
+					<h4 class="fw-bold mb-0">{{ evaluation.title }}</h4>
+					<p class="text-muted small fs-6">Last run: {{ statistic.created_at }}</p>
+				</div>
+			{% empty %}
+				<div class="col-12 text-center pb-3">
+					<h4 class="fw-bold mb-0">{{ evaluation.title }}</h4>
+					<p class="text-muted small fs-6">Trained the: {{ evaluation.trained_at }}</p>
+				</div>
+				<div class="text-center">
+					<p>No evaluations yet.</p>
+				</div>
+			{% endfor %}
+			
+			<div class="row">
+					
+					<!-- Histogram -->
+					{% for histogram in evaluation.histograms.all %}
+						<div class="col-12 col-md-6 pb-3 mx-auto d-flex align-items-center">
+							<img src="{{ histogram.chart_image.url }}" alt="Histogram" style="max-width: 100%; height: auto;">
+						</div>
+					{% endfor %}
+					
+					<!-- Statisctics -->
+					{% for statistic in evaluation.statistics.all %}
+						<div class="col-12 col-md-6 pb-3">
+							<fieldset class="border-fieldset shadow-sm border-secondary-subtle ">
+								<legend>Statistics</legend>
+									<div class="ps-4">
+										<p class="mb-0">- <strong>Mean</strong>: {{ statistic.mean }}</p>
+										<p class="mb-0">- <strong>Median</strong>: {{ statistic.median }}</p>
+										<p class="mb-0">- <strong>Mode</strong>: {{ statistic.mode }}</p>
+										<p class="mb-0">- <strong>Standard Error</strong>: {{ statistic.std_error }}</p>
+										<p class="mb-0">- <strong>Standard Deviation</strong>: {{ statistic.std_deviation }}</p>
+										<p class="mb-0">- <strong>Variance</strong>: {{ statistic.variance }}</p>
+										<p class="mb-0">- <strong>Kurtosis</strong>: {{ statistic.kurtosis }}</p>
+										<p class="mb-0">- <strong>Skewness</strong>: {{ statistic.skewness }}</p>
+										<p class="mb-0">- <strong>Minimum</strong>: {{ statistic.minimum }}</p>
+										<p class="mb-0">- <strong>Maximum</strong>: {{ statistic.maximum }}</p>
+										<p class="mb-0">- <strong>Range</strong>: {{ statistic.range }}</p>
+										<p class="mb-0">- <strong>Count</strong>: {{ statistic.count }}</p>
+									</div>
+							</fieldset>
+						</div>
+					{% endfor %}
+					
+			</div>
+			
+			<hr class="container">
+		{% endfor %}
+		
+		
+		
+		</section>
+	
+	</div>
+	
+	
+	
+	<!-- Automatic Scroll-->
+	<script>
+		const params = new URLSearchParams(window.location.search);
+		const scrollTarget = params.get("scroll");
+		if (scrollTarget) {
+			const target = document.getElementById(scrollTarget);
+			if (target) {
+				target.scrollIntoView({ behavior: "smooth" });
+			}
+		}
+	</script>
+	
+	
+	
+{% endblock %}

@@ -288,7 +288,7 @@
 				<div>
 					<h2 class="fw-bold mb-1">{{ nb_histograms }}</h2>
 					<p class="mb-0 fw-bold">Evaluations</p>
-					<a href="{% url 'user_questions' %}" class="text-primary fw-semibold small" style="text-decoration: none; color: inherit;">See all &rarr;</a>
+					<a href="{% url 'evaluations' %}" class="text-primary fw-semibold small" style="text-decoration: none; color: inherit;">See all &rarr;</a>
 				</div>
 			</div>
 			
@@ -323,7 +323,7 @@
 				<div>
 					<h2 class="fw-bold mb-1">{{ nb_statistics }}</h2>
 					<p class="mb-0 fw-bold">Evaluations</p>
-					<a href="{% url 'user_questions' %}" class="text-primary fw-semibold small" style="text-decoration: none; color: inherit;">See more &rarr;</a>
+					<a href="{% url 'evaluations' %}" class="text-primary fw-semibold small" style="text-decoration: none; color: inherit;">See all &rarr;</a>
 				</div>
 			</div>
 			
@@ -361,15 +361,15 @@
 								</td>
 								
 								<td class="py-4 text-end">
-									<a href="#" class="fw-medium" style="text-decoration: none;">{{ value.mean }}</a>
+									<a href="{% url 'evaluations' %}?scroll={{ value.model_used.id }}" class="fw-medium" style="text-decoration: none;">{{ value.mean }}</a>
 								</td>
 								
 								<td class="py-4 text-end">
-									<a href="#" class="fw-medium" style="text-decoration: none;">{{ value.median }}</an>
+									<a href="{% url 'evaluations' %}?scroll={{ value.model_used.id }}" class="fw-medium" style="text-decoration: none;">{{ value.median }}</an>
 								</td>
 								
 								<td class="py-4 text-end d-none d-md-table-cell">
-									<a href="#" class="fw-medium" style="text-decoration: none;">{{ value.std_deviation }}</a>
+									<a href="{% url 'evaluations' %}?scroll={{ value.model_used.id }}" class="fw-medium" style="text-decoration: none;">{{ value.std_deviation }}</a>
 								</td>
 							</a>
 						</tr>
@@ -450,5 +450,6 @@
 		<div class="py-4"></div>
 		
 	</div>
+	
 	
 {% endblock %}

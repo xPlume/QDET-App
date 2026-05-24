@@ -10,7 +10,7 @@ class Statistic(models.Model):
 	
 	# Foreign Keys
 	user = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
-	model_used = models.ForeignKey(TrainedModel, null=False, on_delete=models.CASCADE)
+	model_used = models.ForeignKey(TrainedModel, null=False, on_delete=models.CASCADE, related_name='statistics')
 	
 	# Attributes
 	mean = models.DecimalField(max_digits=4, decimal_places=2, null=False, blank=False)

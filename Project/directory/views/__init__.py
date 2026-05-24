@@ -8,3 +8,4 @@ from .update_question import update_question
 from .delete_question import delete_question
 from .train_select import train_select
 from .evaluate_select import evaluate_select
+from .evaluations import evaluations
