@@ -23,7 +23,7 @@ class Histogram(models.Model):
 	model_used = models.ForeignKey(TrainedModel, null=False, on_delete=models.CASCADE, related_name='histograms')
 	
 	def __str__(self):
-		return f"Histogram of {self.user.username}"
+		return f"Histogram of {self.user.username}; Model: {self.model_used.title}"
 	#def 
 	
 #class

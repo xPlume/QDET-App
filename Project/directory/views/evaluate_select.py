@@ -64,7 +64,7 @@ def evaluate_select(request):
 			
 		#if
 		else:
-			messages.error(request, f"An error occured, please try again", extra_tags="danger")
+			messages.error(request, f"An error occured, please try again.", extra_tags="danger")
 			return redirect('evaluate_select')
 		#else
 		

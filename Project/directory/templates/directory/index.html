@@ -231,7 +231,7 @@
 						<div>
 							<!-- Text -->
 							<h2 class="fw-bold mb-1">{{ nb_context }}</h2>
-							<p class="mb-0 fw-bold">Contexts</p>
+							<p class="mb-0 fw-bold text-primary">Contexts</p>
 							<p class="text-muted mb-0 small fs-6">Reading passages</p>
 						</div>
 					</div>
@@ -245,7 +245,7 @@
 						<div>
 							<!-- Text -->
 							<h2 class="fw-bold mb-1">{{ nb_questions }}</h2>
-							<p class="mb-0 fw-bold">Questions</p>
+							<p class="mb-0 fw-bold text-primary">Questions</p>
 							<p class="text-muted mb-0 small fs-6">Across {{ nb_context }} contexts</p>
 						</div>
 					</div>
@@ -258,8 +258,8 @@
 					<div class="d-flex align-items-center gap-4">
 						<div>
 							<!-- Text -->
-							<h2 class="fw-bold mb-1 text-primary">{{ nb_model|default_if_none:'0' }}</h2>
-							<p class="mb-0 fw-bold">Trained models</p>
+							<h2 class="fw-bold mb-1">{{ nb_model|default_if_none:'0' }}</h2>
+							<p class="mb-0 fw-bold text-primary">Trained models</p>
 							<p class="text-muted mb-0 small fs-6">Difficulty, Discrimination, Facility</p>
 						</div>
 					</div>
@@ -300,7 +300,7 @@
 					<div class="col-12 col-md-6 text-center pb-3">
 						<h4 class="fw-bold mb-0">{{ histogram.model_used.title }}</h4>
 						<p class="text-muted small fs-6">Last update: {{ histogram.created_at }}</p>
-						<img src="{{ histogram.chart_image.url }}" alt="Histogram" style="max-width: 100%; height: auto;">
+						<img src="{{ histogram.chart_image.url }}" alt="Histogram" style="max-width: 100%; height: auto;" alt="" loading="lazy">
 					</div>
 				{% endfor %}
 			</div>
