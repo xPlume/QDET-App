@@ -141,6 +141,32 @@
 
 
 
+/*** Spinner - Adding a background when spinner is loading ***/
+.loader-overlay {
+	display: none; /* Hidden by default */
+	position: fixed;
+	inset: 0;
+	z-index: 999999; /* Stay on top of navbars and modals */
+	
+	/* Flexbox utilities to center and stack vertically */
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem; /* Equivalent to Bootstrap's gap-3 */
+	
+	/* Bootstrap Variable Magic: Automatically matches light/dark themes */
+	background-color: rgba(var(--bs-body-bg-rgb), 0.85); 
+	backdrop-filter: blur(4px); /* Optional: Adds a modern blurred glass effect */
+	transition: background-color 0.15s ease-in-out;
+}
+
+/* Class added via JavaScript to activate the screen lock */
+.loader-overlay.active {
+	display: flex;
+}
+
+
+
 
 
 

@@ -34,12 +34,8 @@
 
 {% block content %}
 	
-	
-	
-	
-	
 	<!-- Train model Form start -->
-	<form method="POST" enctype="multipart/form-data">
+	<form method="POST" enctype="multipart/form-data" id="training-form">
 	{% csrf_token %}
 		
 		<div class="container">
@@ -61,7 +57,7 @@
 			
 			<!-- Train model button-->
 			<div class="text-center my-3">
-				<button type="submit" name="train_model" class="btn btn-lg btn-outline-primary">Train the model</button>
+				<button type="submit" name="train_model" class="btn btn-lg btn-outline-primary" id="model_training">Train the model</button>
 			</div>
 			
 		</div>
@@ -136,6 +132,23 @@
 	{% endif %}
 	
 	
+	<!-- Initialising the spinner -->
+	<div id="loader" class="loader-overlay">
+		<div class="spinner-border text-primary" role="status" style="width: 3.5rem; height: 3.5rem;">
+			<span class="visually-hidden">Loading...</span>
+		</div>
+		<div class="fs-5 fw-medium text-body">
+			<p class="lead">Training the model...</p>
+		<div>
+	</div>
+	
+	<!-- JS to generate the spinner -->
+	<script>
+		document.getElementById('training-form').addEventListener('submit', function(event) {
+			const loader = document.getElementById('loader');
+			loader.classList.add('active');
+		});
+	</script>
 	
 	
 {% endblock %}
