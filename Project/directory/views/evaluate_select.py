@@ -8,6 +8,8 @@ from django.db.models import Q
 # Reference to other files
 from directory.models import Question, TrainedModel
 from modules.evaluate import evaluate
+from modules.histogram_creation import create_histogram
+from modules.statistical_metrics import statistical_metrics
 
 
 @login_required
@@ -47,8 +49,15 @@ def evaluate_select(request):
 			# Query the model
 			model_instance = get_object_or_404(TrainedModel, id=selected_id)
 			
-			# Calling the evaluate function
+			# Generate the predictions
 			evaluate(questions_info, model_instance, user)
+			
+			# Create and save the Histograms
+			create_histogram(model_instance, user)
+			
+			# Obtain the statisitical metrics of the predicted data set
+			statistical_metrics(model_instance, user)
+			
 			
 			messages.success(request, f"Successfully evaluated all the questions.", extra_tags="success")
 			return redirect('index')

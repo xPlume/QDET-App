@@ -9,32 +9,20 @@ from django.core.files.base import ContentFile
 
 # References to other files
 from directory.models import Histogram, Prediction
+from modules.utils import prediction_values
 
 
 
 def create_histogram(model_used, user):
 	
+	# Obtaining the dataset for the histogram
+	float_data = prediction_values(model_used, user)
+	
 	# Obtaining the parameter
 	parameter_value = model_used.parameter
 	
-	# Querying the prediction values
-	decimal_values = Prediction.objects.filter(
-		user=user,
-		model_used=model_used
-	).values_list('value', flat=True)
-	
-	
-	# Converting the database values into floats
-	float_data = [float(val) for val in decimal_values if val is not None]
-	
-	if not float_data:
-		return None
-	#if not
-	
-	
 	
 	# Generating the graph
-	
 	
 	sns.set_theme(style="whitegrid", context="notebook")
 	fig, ax = plt.subplots(figsize=(8, 5))

@@ -12,7 +12,6 @@ from django.db.models import Q
 
 # Reference to other files
 from directory.models import Prediction, Question
-from modules.histogram_creation import create_histogram
 
 
 # Taking all the questions, and setting the proper format for the Test 
@@ -124,7 +123,5 @@ def evaluate(questions_info, model_instance, user):
 	
 	# Saving predictions in the db
 	save_predictions(questions_info, model_instance, predictions, user)
-	
-	create_histogram(model_instance, user)
 	
 #def 
