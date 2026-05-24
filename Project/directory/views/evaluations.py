@@ -23,6 +23,8 @@ def evaluations(request):
 	
 	public_models = TrainedModel.objects.prefetch_related('histograms', 'statistics').filter(
 		public = True,
+	).exclude(
+		uploader = user,
 	).order_by('-id')
 	
 	
