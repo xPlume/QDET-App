@@ -37,6 +37,9 @@ def statistical_metrics(model_used, user):
 	range = maximum - minimum
 	
 	
+	# If entity of for that exact model and user exists, delete it.
+	Statistic.objects.filter(user=user, model_used=model_used).delete()
+	
 	# Saving the results in a new object
 	new_statisctics_instance = Statistic(
 		user = user,

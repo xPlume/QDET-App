@@ -274,6 +274,76 @@
 		
 		
 		
+		<!-- Recent Evaluation - Statistical data Table-->
+		<section>
+		<div class="card border rounded-4 shadow-sm p-4 my-3">
+		
+			<!-- Title -->
+			<div class="d-flex justify-content-between align-items-center mb-4">
+				<div>
+					<h3 class="fw-bold fs-4 mb-0">Recent Evaluations</h3>
+					<p class="text-muted mb-0 small fs-6">Statistical overview of the latent-trait of the dataset for each model</p>
+				</div>
+				<div>
+					<h2 class="fw-bold mb-1">{{ nb_statistics }}</h2>
+					<p class="mb-0 fw-bold">Evaluations</p>
+					<a href="{% url 'user_questions' %}" class="text-primary fw-semibold small" style="text-decoration: none; color: inherit;">See more &rarr;</a>
+				</div>
+			</div>
+			
+			<!-- Table start -->
+			<table class="table table-hover align-middle mb-0">
+				<thead>
+					<tr class="table-active border-bottom">
+						<th scope="col" class="py-3 ps-3" style="width: 15%;">When</th>
+						<th scope="col" class="py-3" style="width: 20%;">Model</th>
+						<th scope="col" class="py-3" style="width: 10%;">Parameter</th>
+						<th scope="col" class="py-3 text-end" style="width: 14%;">Questions</th>
+						<th scope="col" class="py-3 text-end" style="width: 13%;">Mean</th>
+						<th scope="col" class="py-3 text-end" style="width: 14%;">Median</th>
+						<th scope="col" class="py-3 text-end pe-3 d-none d-md-table-cell" style="width: 14%;">Std. Deviation</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					{% for value in statistics %}
+						<tr class="position-relative">
+								<td class="py-4 ps-3">
+									<span class="text-muted d-block text-truncate-2">{{ value.created_at|date:"b d - H:i" }}</span>
+								</td>
+								
+								<td class="py-4">
+									<span class="fw-bold">{{ value.model_used.title }}</span>
+								</td>
+								
+								<td class="py-4">
+									<span class="badge bg-secondary">{{ value.model_used.parameter }}</span>
+								</td>
+								
+								<td class="py-4 text-end">
+									<span class="">{{ value.count }}</span>
+								</td>
+								
+								<td class="py-4 text-end">
+									<a href="#" class="fw-medium" style="text-decoration: none;">{{ value.mean }}</a>
+								</td>
+								
+								<td class="py-4 text-end">
+									<a href="#" class="fw-medium" style="text-decoration: none;">{{ value.median }}</an>
+								</td>
+								
+								<td class="py-4 text-end d-none d-md-table-cell">
+									<a href="#" class="fw-medium" style="text-decoration: none;">{{ value.std_deviation }}</a>
+								</td>
+							</a>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			
+		</div>
+		</section>
+		
 		
 		
 		
@@ -306,7 +376,7 @@
 					{% for question in questions %}
 					<tr>
 						<td class="py-4 ps-3">
-							<span class="text-muted d-block text-truncate-2" title="Blogging: Confessing to the world...">{{ question.context.context_id }}</span>
+							<span class="text-muted d-block text-truncate-2">{{ question.context.context_id }}</span>
 						</td>
 						
 						<td class="py-4">
