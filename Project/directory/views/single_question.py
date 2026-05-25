@@ -2,11 +2,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 
 # References to other files
 from directory.models import Context, Question, Answer, TrainedModel
 from directory.decorators import question_creator
 from modules.evaluate import evaluate
+from modules.histogram_creation import create_histogram
+from modules.statistical_metrics import statistical_metrics
 
 
 @login_required
@@ -26,6 +29,11 @@ def single_question(request, question_id):
 		uploader = user,
 	)
 	
+	public_models = TrainedModel.objects.filter(
+		public=True,
+	).exclude(uploader=user)
+	
+	
 	# Evaluating the question
 	if request.method == 'POST':
 		
@@ -37,15 +45,31 @@ def single_question(request, question_id):
 			id=question_id
 		).select_related('context').prefetch_related('answers').order_by('-id')
 		
+		
+		
 		for model_id in selected_ids:
-			# Query the model
-			model_instance = get_object_or_404(TrainedModel, id=model_id, uploader=user)
 			
-			# Calling the evaluate function
-			evaluate(questions_info, model_instance, user)
+			# Double-check that the ID belongs to their own models OR a public model
+			is_valid = TrainedModel.objects.filter(id=model_id).filter(
+				Q(uploader=user) | Q(public=True),
+			).exists()
+			
+			if is_valid:
+				# Query the model
+				model_instance = get_object_or_404(TrainedModel, id=model_id)
+				
+				# Generate the predictions
+				evaluate(questions_info, model_instance, user)
+				
+				# Create and save the Histograms
+				create_histogram(model_instance, user)
+				
+				# Obtain the statisitical metrics of the predicted data set
+				statistical_metrics(model_instance, user)
+			#if
 		#for
 		
-		messages.success(request, "The evalutaion was exectued with success", extra_tags="success")
+		messages.success(request, "The evaluation was exectued with success", extra_tags="success")
 		return redirect('single_question', question_id)
 		
 	#if
@@ -56,6 +80,7 @@ def single_question(request, question_id):
 		"question": question,
 		"answers": answers,
 		"existing_models": existing_models,
+		"public_models": public_models,
 	}
 	
 	return render(request, template_name, context)

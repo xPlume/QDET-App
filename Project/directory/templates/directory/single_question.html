@@ -36,155 +36,186 @@
 
 
 
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10 col-xl-8">
-			
-			<!-- Back to list button -->
-			<div class="my-3 d-flex justify-content-between">
-                <a href="{% url 'user_questions' %}" class="btn btn-link text-decoration-none text-muted">← Back to List</a>
-            </div>
-			
-			
-            <div class="card shadow-sm border-secondary-subtle">
-                <div class="card-body px-4 p-md-5">
-                    
-                    <div class="mb-4 px-4 py-3 rounded-3" style="border-left: 5px solid #6c757d;">
-                        <h6 class="text-uppercase text-muted fw-bold small mb-2">{{ question.context.context_title }}</h6>
-                        <div class="lead" style="font-size: 1.05rem; line-height: 1.7;">
-                            {{ question.context.context|linebreaks }}
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <h4 class="fw-bold lh-base">
-                            <span class="badge bg-primary me-2">Question {{ question.q_id }}</span>
-                            {{ question.question }}
-                        </h4>
-                    </div>
-
-                    <div class="p-3 p-md-4 border rounded-3">
-                        <p class="text-muted small fw-bold text-uppercase mb-3">Options:</p>
-                        
-                        <div class="list-group list-group-flush">
-                            {% for answer in answers %}
-                                <div class="list-group-item border rounded-3 mb-2 px-3 py-3 d-flex justify-content-between align-items-center
-                                    {% if answer.is_correct %}
-                                        border-success-subtle
-										bg-success-subtle
-                                    {% endif %}"
-                                    >
-                                    
-                                    <div class="d-flex align-items-start">
-                                        <span class="me-3 fw-bold text-muted">{{ forloop.counter }}.</span>
-                                        <span class="{% if answer.is_correct %}fw-bold text-success{% endif %}">
-                                            {{ answer.answer }}
-                                        </span>
-                                    </div>
-
-                                    {% if answer.is_correct %}
-                                        <span class="badge bg-success shadow-sm">
-                                            <i class="fas fa-check me-1"></i> Correct
-                                        </span>
-                                    {% endif %}
-                                </div>
-                            {% empty %}
-                                <p class="text-muted italic">No choices provided.</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-					
-					<div class="my-4">
-						<hr>
-					</div>
-					
-					
-					<!-- Difficulty - Discrimination - Facility -->
-					<div class="row">
+	<div class="container my-5">
+		<div class="row justify-content-center">
+			<div class="col-lg-10 col-xl-8">
+				
+				<!-- Back to list button -->
+				<div class="my-3 d-flex justify-content-between">
+					<a href="{% url 'user_questions' %}" class="btn btn-link text-decoration-none text-muted">← Back to List</a>
+				</div>
+				
+				
+				<div class="card shadow-sm border-secondary-subtle">
+					<div class="card-body px-4 p-md-5">
 						
-						<!-- Difficulty -->
-						<div class="col-4 py-2">
-							<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
-								<div class="d-flex align-items-center gap-4">
-									<div>
-										<!-- Text -->
-										<p class="text-muted mb-0 small fs-6">Difficulty</p>
-										<h2 class="fw-bold mt-1">{{ question.question_difficulty|default_if_none:'--' }}</h2>
+						<div class="mb-4 px-4 py-3 rounded-3" style="border-left: 5px solid #6c757d;">
+							<h6 class="text-uppercase text-muted fw-bold small mb-2">{{ question.context.context_title }}</h6>
+							<div class="lead" style="font-size: 1.05rem; line-height: 1.7;">
+								{{ question.context.context|linebreaks }}
+							</div>
+						</div>
+
+						<div class="mb-4">
+							<h4 class="fw-bold lh-base">
+								<span class="badge bg-primary me-2">Question {{ question.q_id }}</span>
+								{{ question.question }}
+							</h4>
+						</div>
+
+						<div class="p-3 p-md-4 border rounded-3">
+							<p class="text-muted small fw-bold text-uppercase mb-3">Options:</p>
+							
+							<div class="list-group list-group-flush">
+								{% for answer in answers %}
+									<div class="list-group-item border rounded-3 mb-2 px-3 py-3 d-flex justify-content-between align-items-center
+										{% if answer.is_correct %}
+											border-success-subtle
+											bg-success-subtle
+										{% endif %}"
+										>
+										
+										<div class="d-flex align-items-start">
+											<span class="me-3 fw-bold text-muted">{{ forloop.counter }}.</span>
+											<span class="{% if answer.is_correct %}fw-bold text-success{% endif %}">
+												{{ answer.answer }}
+											</span>
+										</div>
+
+										{% if answer.is_correct %}
+											<span class="badge bg-success shadow-sm">
+												<i class="fas fa-check me-1"></i> Correct
+											</span>
+										{% endif %}
 									</div>
-								</div>
+								{% empty %}
+									<p class="text-muted italic">No choices provided.</p>
+								{% endfor %}
 							</div>
 						</div>
 						
-						<!-- Questions -->
-						<div class="col-4 py-2">
-							<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
-								<div class="d-flex align-items-center gap-4">
-									<div>
-										<!-- Text -->
-										<p class="text-muted mb-0 small fs-6">Discrimination</p>
-										<h2 class="fw-bold mt-1">{{ question.question_discrimination|default_if_none:'--' }}</h2>
-									</div>
-								</div>
-							</div>
+						<div class="my-4">
+							<hr>
 						</div>
 						
-						<!-- Context -->
-						<div class="col-4 py-2">
-							<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
-								<div class="d-flex align-items-center gap-4">
-									<div>
-										<!-- Text -->
-										<p class="text-muted mb-0 small fs-6">Facility</p>
-										<h2 class="fw-bold mt-1">{{ question.question_facility|default_if_none:'--' }}</h2>
+						
+						<!-- Difficulty - Discrimination - Facility -->
+						<div class="row">
+							
+							<!-- Difficulty -->
+							<div class="col-4 py-2">
+								<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
+									<div class="d-flex align-items-center gap-4">
+										<div>
+											<!-- Text -->
+											<p class="text-muted mb-0 small fs-6">Difficulty</p>
+											<h2 class="fw-bold mt-1">{{ question.question_difficulty|default_if_none:'--' }}</h2>
+										</div>
 									</div>
 								</div>
 							</div>
+							
+							<!-- Questions -->
+							<div class="col-4 py-2">
+								<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
+									<div class="d-flex align-items-center gap-4">
+										<div>
+											<!-- Text -->
+											<p class="text-muted mb-0 small fs-6">Discrimination</p>
+											<h2 class="fw-bold mt-1">{{ question.question_discrimination|default_if_none:'--' }}</h2>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<!-- Context -->
+							<div class="col-4 py-2">
+								<div class="d-flex align-items-center justify-content-between p-4 border rounded-4 shadow-sm">
+									<div class="d-flex align-items-center gap-4">
+										<div>
+											<!-- Text -->
+											<p class="text-muted mb-0 small fs-6">Facility</p>
+											<h2 class="fw-bold mt-1">{{ question.question_facility|default_if_none:'--' }}</h2>
+										</div>
+									</div>
+								</div>
+							</div>
+						
 						</div>
-					
-					</div>
-					
-					
-					<!-- Update Question -->
-					<div class="d-flex justify-content-center mt-4">
-						<a href="{% url 'update_question' question.id %}">
-							<button type="button" class="btn btn-lg btn-outline-primary">Update question</button>
-						</a>
+						
+						
+						<!-- Update Question -->
+						<div class="d-flex justify-content-center mt-4">
+							<a href="{% url 'update_question' question.id %}">
+								<button type="button" class="btn btn-lg btn-outline-primary">Update question</button>
+							</a>
+						</div>
+						
 					</div>
 					
 				</div>
 				
-            </div>
-			
-			
-			
-			<!-- Form start -->
-			
-			<form method="POST" enctype="multipart/form-data">
-			{% csrf_token %}
-			
-				<!-- Evaluate question -->
-				<div class="mt-5">
-					<fieldset class="border-fieldset shadow-sm border-secondary-subtle">
-						<legend>Evaluate this question</legend>
-						
-						{% for model in existing_models %}
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" name="selected_ids" id="check_{{ model.id }}" value="{{ model.id }}">
-								<label class="form-check-label" for="check_{{ model.id }}">
-									<strong>[{{ model.get_parameter_display }}]</strong> {{ model.title }}
-								</label>
-							</div>
-						{% endfor %}
-						
-						<!-- Submit button -->
-						<button type="submit" class="btn btn-lg btn-outline-success mt-3">Evaluate</button>
-						
-					</fieldset>
-				</div>
-			</form>
-			
-			
-        </div>
-    </div>
-</div>
+				
+				
+				<!-- Form start -->
+				
+				<form method="POST" enctype="multipart/form-data" id="evaluate-form">
+				{% csrf_token %}
+				
+					<!-- Evaluate question -->
+					<div class="mt-5">
+						<fieldset class="border-fieldset shadow-sm border-secondary-subtle">
+							<legend>Evaluate this question</legend>
+							
+							{% for model in existing_models %}
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" name="selected_ids" id="check_{{ model.id }}" value="{{ model.id }}">
+									<label class="form-check-label" for="check_{{ model.id }}">
+										<strong>[{{ model.get_parameter_display }}]</strong> {{ model.title }}
+									</label>
+								</div>
+							{% endfor %}
+							
+							{% for model in public_models %}
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" name="selected_ids" id="check_{{ model.id }}" value="{{ model.id }}">
+									<label class="form-check-label" for="check_{{ model.id }}">
+										<strong>[{{ model.get_parameter_display }}]</strong> {{ model.title }}
+									</label>
+								</div>
+							{% endfor %}
+							
+							<!-- Submit button -->
+							<button type="submit" class="btn btn-lg btn-outline-success mt-3">Evaluate</button>
+							
+						</fieldset>
+					</div>
+				</form>
+				
+				
+			</div>
+		</div>
+	</div>
+	
+	
+	
+	<!-- Initialising the spinner -->
+	<div id="loader" class="loader-overlay">
+		<div class="spinner-border text-primary" role="status" style="width: 3.5rem; height: 3.5rem;">
+			<span class="visually-hidden">Loading...</span>
+		</div>
+		<div class="fs-5 fw-medium text-body">
+			<p class="lead">Evaluating the MCQs...</p>
+		<div>
+	</div>
+	
+	<!-- JS to generate the spinner -->
+	<script>
+		document.getElementById('evaluate-form').addEventListener('submit', function(event) {
+			const loader = document.getElementById('loader');
+			loader.classList.add('active');
+		});
+	</script>
+	
+	
 {% endblock %}

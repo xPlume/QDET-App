@@ -52,7 +52,7 @@
 						<th scope="row">{{ question.context_id }}</th>
 						<td>{{ question.q_id }}</td>
 						<td scope="col" class="col-8">
-							<a href="{% url 'single_question' question.id %}">
+							<a href="{% url 'single_question' question.id %}" style="text-decoration: none;">
 								{{ question.question }}
 							</a>
 						</td>

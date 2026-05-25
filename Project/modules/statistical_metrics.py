@@ -1,7 +1,24 @@
 import pandas as pd
+import math
 
 from modules.utils import prediction_values
 from directory.models import Statistic
+
+
+# Converts "nan" pandas values to "None"
+def convert_nan(val):
+	
+	if val is None:
+		return None
+	#if
+	
+	# Check if the value is a float NaN
+	if isinstance(val, float) and math.isnan(val):
+		return None
+	#if
+	
+	return val
+#def
 
 
 """
@@ -10,7 +27,7 @@ using pandas for maximum efficiency.
 """
 def statistical_metrics(model_used, user):
 	
-	# Obtaining the dataset for the histogram
+	# Obtaining the dataset
 	float_data = prediction_values(model_used, user)
 	
 	
@@ -34,30 +51,30 @@ def statistical_metrics(model_used, user):
 	# Calculating Range
 	minimum = series.min()
 	maximum = series.max()
-	range = maximum - minimum
+	data_range = maximum - minimum
 	
 	
 	# If entity of for that exact model and user exists, delete it.
 	Statistic.objects.filter(user=user, model_used=model_used).delete()
 	
 	# Saving the results in a new object
-	new_statisctics_instance = Statistic(
+	new_statistics_instance = Statistic(
 		user = user,
 		model_used = model_used,
-		mean = series.mean(),
-		std_error = series.sem(),
-		median = series.median(),
-		mode = mode_value,
-		std_deviation = series.std(),
-		variance = series.var(),
-		kurtosis = series.kurt(),
-		skewness = series.skew(),
-		minimum = minimum,
-		maximum = maximum,
-		range = range,
+		mean = convert_nan(series.mean()),
+		std_error = convert_nan(series.sem()),
+		median = convert_nan(series.median()),
+		mode = convert_nan(mode_value),
+		std_deviation = convert_nan(series.std()),
+		variance = convert_nan(series.var()),
+		kurtosis = convert_nan(series.kurt()),
+		skewness = convert_nan(series.skew()),
+		minimum = convert_nan(minimum),
+		maximum = convert_nan(maximum),
+		range = convert_nan(data_range),
 		count = int(series.count()),
 	)
 	
-	new_statisctics_instance.save()
+	new_statistics_instance.save()
 	
 #def 

@@ -1,9 +1,9 @@
 # Django imports
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Q
+from django.urls import reverse
 
 # Reference to other files
 from directory.models import Question, TrainedModel
@@ -60,7 +60,10 @@ def evaluate_select(request):
 			
 			
 			messages.success(request, f"Successfully evaluated all the questions.", extra_tags="success")
-			return redirect('index')
+			
+			base_url = reverse('evaluations')
+			redirect_url = f"{base_url}?scroll={model_instance.id}"
+			return redirect(redirect_url)
 			
 		#if
 		else:

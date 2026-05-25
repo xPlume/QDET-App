@@ -119,14 +119,22 @@
 						{% if request.user.is_authenticated %}
 							
 							<div class="dropdown">
-								<a class="nav-link nav-link dropdown-toggle ms-3 {% if request.resolver_match.url_name == 'new_context' %}active{% elif request.resolver_match.url_name == 'upload_csv' %}active{% endif %}" data-bs-toggle="dropdown" href="#" aria-expanded="false">Create Question</a>
+								<a class="nav-link nav-link dropdown-toggle ms-3 {% if request.resolver_match.url_name == 'new_context' %}active{% elif request.resolver_match.url_name == 'upload_csv' %}active{% elif request.resolver_match.url_name == 'user_questions' %}active{% endif %}" data-bs-toggle="dropdown" href="#" aria-expanded="false">MCQs</a>
 								<ul class="dropdown-menu drop-navbar">
-									<li><a class="dropdown-item" href="{% url 'new_context' %}">Individual Question</a></li>
+									<li><a class="dropdown-item" href="{% url 'new_context' %}">Create new MCQ</a></li>
 									<li><a class="dropdown-item" href="{% url 'upload_csv' %}">Bulk Import</a></li>
+									<li><a class="dropdown-item" href="{% url 'user_questions' %}">Your Questions</a></li>
 								</ul>
 							</div>
 							
-							<a href="{% url 'user_questions' %}" class="nav-item nav-link btn-link ms-3 {% if request.resolver_match.url_name == 'user_questions' %}active{% endif %}">Your Questions</a>
+							<div class="dropdown">
+								<a class="nav-link nav-link dropdown-toggle ms-3 {% if request.resolver_match.url_name == 'train_select' %}active{% elif request.resolver_match.url_name == 'evaluate_select' %}active{% elif request.resolver_match.url_name == 'evaluations' %}active{% endif %}" data-bs-toggle="dropdown" href="#" aria-expanded="false">Models</a>
+								<ul class="dropdown-menu drop-navbar">
+									<li><a class="dropdown-item" href="{% url 'train_select' %}">Train a Model</a></li>
+									<li><a class="dropdown-item" href="{% url 'evaluate_select' %}">Evaluate Questions</a></li>
+									<li><a class="dropdown-item" href="{% url 'evaluations' %}">Evaluation Results</a></li>
+								</ul>
+							</div>
 						{% endif %}
 						
 						
