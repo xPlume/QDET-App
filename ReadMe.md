@@ -23,11 +23,10 @@ The QDET App is meant to be a web application designed to perform automated qual
 
 ## Features
 
-- Feature 1
-- Feature 2
-- Feature 3
-- Feature 4
-- Will be specified once the specifications are fully validated
+- CRUDs for MCQs: Users can upload contexts, questions in regards to the contexts, and different possible answers.
+- AI model training: Using the text2props library, users can train a pre-defined AI model on their MCQs, choosing a specific parameter (difficulty, discrimination, facility).
+- AI Evaluation: Users can select an existing AI model, and run the evaluation on their own MCQs to obtain a predicted value per MCQ, based on the trained parameter.
+- Dashboard: Beautiful and intuitive dashboard meant to display to the users the results of the AI analysis through graphs, tables, and statistical values.
 
 ---
 

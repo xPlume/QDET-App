@@ -15,6 +15,10 @@ def register(request):
 		
 		if form.is_valid():
 			
+			
+			# On production, please remove the following comments
+			# The goal of that code is to verify an email before validating the account
+			"""
 			# Save user but don't log them in
 			user = form.save(commit=False)
 			user.is_active = False  # Set user as inactive until email verification
@@ -23,10 +27,14 @@ def register(request):
 			# Send verification email
 			send_activation_email(request, user, form)
 			
-			
-			
 			messages.success(request, "Check your emails to activate your account.", extra_tags="success")
 			return redirect('index')
+			"""
+			
+			# On development, just create the account (no email verification)
+			user = form.save()
+			messages.success(request, "Your account has been created! Please login.", extra_tags="success")
+			return redirect('login')
 			
 		#if
 		else:
