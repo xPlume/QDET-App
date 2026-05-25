@@ -69,7 +69,7 @@ def single_question(request, question_id):
 			#if
 		#for
 		
-		messages.success(request, "The evaluation was exectued with success", extra_tags="success")
+		messages.success(request, "The evaluations were exectued with success", extra_tags="success")
 		return redirect('single_question', question_id)
 		
 	#if

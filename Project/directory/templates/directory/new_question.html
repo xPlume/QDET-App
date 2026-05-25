@@ -89,6 +89,48 @@
 			</div>
 			
 			
+			<!-- Latent Traits  -->
+			<div class="row">
+				
+				<!-- Question difficulty -->
+				<div class="col-12 col-sm-4 form-floating mb-3">
+					<input
+						class="form-control"
+						type="text"
+						placeholder="Question ID"
+						name="question_difficulty"
+						value="{{ question.question_difficulty|default_if_none:'' }}"
+						>
+					<label class="ms-3" for="floatingInput">Question difficulty</label>
+				</div>
+				
+				<!-- Question discrimination -->
+				<div class="col-12 col-sm-4 form-floating mb-3">
+					<input
+						class="form-control"
+						type="text"
+						placeholder="Question ID"
+						name="question_discrimination"
+						value="{{ question.question_discrimination|default_if_none:'' }}"
+						>
+					<label class="ms-3" for="floatingInput">Question discrimination</label>
+				</div>
+				
+				<!-- Question facility -->
+				<div class="col-12 col-sm-4 form-floating mb-3">
+					<input
+						class="form-control"
+						type="text"
+						placeholder="Question ID"
+						name="question_facility"
+						value="{{ question.question_facility|default_if_none:'' }}"
+						>
+					<label class="ms-3" for="floatingInput">Question facility</label>
+				</div>
+			</div>
+			
+			
+			
 			<!-- Question Text Area -->
 			<div class="mb-3">
 				<label class="form-label">Question</label>
