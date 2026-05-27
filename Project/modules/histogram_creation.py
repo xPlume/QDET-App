@@ -33,7 +33,7 @@ def create_histogram(model_used, user):
 	# Map dynamic X-axis labels to provide context for the legend label
 	metric_configs = {
 		"difficulty": {
-			"x_label": "Difficulty (%)",
+			"x_label": "Difficulty",
 			"legend_title": "Difficulty",
 			"color": "dodgerblue",
 			"axis_range": (0, 100, 10)  # From 0% to 100% every 10%
@@ -87,7 +87,7 @@ def create_histogram(model_used, user):
 	
 	# Legend
 	ax.legend(loc="upper left", frameon=True, facecolor="white", edgecolor="none")
-
+	
 	# N Count Badge (N = ...)
 	text_str = f"N = {total_elements:,}"
 	ax.text(

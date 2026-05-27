@@ -110,18 +110,19 @@
 									</div>
 							</fieldset>
 						</div>
-					{% endfor %}
-					
-					<div class="col-lg-2 d-flex mx-auto align-items-center">
+						
 						<!-- Re-Evaluate button -->
-						<form method="POST" enctype="multipart/form-data" id="evaluate-form">
-							{% csrf_token %}
-							<input type="hidden" name="param_selection" value="{{ evaluation.id }}">
-							<button type="submit" class="btn btn-outline-success btn-lg">
-								Re-Evaluate
-							</button>
-						</form>
-					</div>
+						<div class="col-lg-2 d-flex mx-auto align-items-center">
+							<form method="POST" enctype="multipart/form-data" id="evaluate-form">
+								{% csrf_token %}
+								<input type="hidden" name="param_selection" value="{{ evaluation.id }}">
+								<button type="submit" class="btn btn-outline-success btn-lg">
+									Re-Evaluate
+								</button>
+							</form>
+						</div>
+						
+					{% endfor %}
 					
 			</div>
 			
