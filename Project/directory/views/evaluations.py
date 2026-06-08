@@ -3,10 +3,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 
 # References to other files
-from directory.models import TrainedModel, Question
+from directory.models import TrainedModel, Question, Histogram, Statistic
 from modules.evaluate import evaluate
 from modules.histogram_creation import create_histogram
 from modules.statistical_metrics import statistical_metrics
@@ -21,10 +21,17 @@ def evaluations(request):
 		uploader = user,
 	).order_by('-id')
 	
-	public_models = TrainedModel.objects.prefetch_related('histograms', 'statistics').filter(
-		public = True,
+	
+	filtered_histograms = Histogram.objects.filter(user=user)
+	filtered_statistics = Statistic.objects.filter(user=user)
+	
+	public_models = TrainedModel.objects.prefetch_related(
+		Prefetch('histograms', queryset=filtered_histograms),
+		Prefetch('statistics', queryset=filtered_statistics)
+	).filter(
+		public=True,
 	).exclude(
-		uploader = user,
+		uploader=user,
 	).order_by('-id')
 	
 	
